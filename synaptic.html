@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synaptic — AI Automation for Your Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0F;--white:#FAFAF8;--lime:#C8F135;--lime-dim:#a8cc20;
+  --mid:#1A1A24;--card:#12121A;--border:rgba(255,255,255,0.08);
+  --muted:rgba(255,255,255,0.45);--danger:#ff4c4c;--success:#2ecc71;
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:16px;line-height:1.6;overflow-x:hidden}
+img{display:block;width:100%;object-fit:cover}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:var(--font-body)}
+input,select,textarea{font-family:var(--font-body)}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(10,10,15,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--font-head);font-weight:800;font-size:1.4rem;letter-spacing:-0.03em;cursor:pointer}
+.logo span{color:var(--lime)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--muted);font-size:0.88rem;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-right{display:flex;align-items:center;gap:0.8rem}
+.lang-select{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.6rem;border-radius:8px;font-size:0.78rem;cursor:pointer}
+.lang-select:focus{outline:none;border-color:rgba(200,241,53,0.4)}
+.lang-select option{background:var(--card);color:var(--white)}
+.btn-nav{padding:0.45rem 1.1rem;border-radius:100px;font-size:0.85rem;font-weight:600;border:none;transition:transform 0.15s}
+.btn-nav.ghost{background:transparent;border:1px solid var(--border);color:var(--white)}
+.btn-nav.ghost:hover{border-color:rgba(255,255,255,0.3)}
+.btn-nav.lime{background:var(--lime);color:var(--black)}
+.btn-nav.lime:hover{transform:scale(1.04)}
+
+/* ===== PAGES ===== */
+.page{display:none}
+.page.active{display:block}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 5% 5rem;position:relative;overflow:hidden}
+.hero-glow{position:absolute;top:-120px;right:-120px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(200,241,53,0.07) 0%,transparent 65%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:-200px;left:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(91,76,245,0.06) 0%,transparent 65%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(200,241,53,0.1);border:1px solid rgba(200,241,53,0.25);color:var(--lime);padding:0.35rem 0.9rem;border-radius:100px;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.8rem;width:fit-content}
+.hero-tag::before{content:'';width:7px;height:7px;background:var(--lime);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+h1{font-family:var(--font-head);font-size:clamp(2.8rem,6.5vw,5.2rem);font-weight:800;line-height:1.0;letter-spacing:-0.04em;max-width:860px;margin-bottom:1.4rem}
+h1 em{color:var(--lime);font-style:normal}
+.hero-sub{font-size:1.1rem;color:var(--muted);max-width:500px;line-height:1.8;margin-bottom:2.2rem}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-lime{background:var(--lime);color:var(--black);padding:0.85rem 1.8rem;border-radius:100px;font-weight:700;font-size:0.95rem;border:none;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 0 30px rgba(200,241,53,0.2)}
+.btn-lime:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(200,241,53,0.4)}
+.btn-ghost{border:1px solid var(--border);color:var(--white);padding:0.85rem 1.8rem;border-radius:100px;font-size:0.95rem;background:transparent;cursor:pointer;transition:border-color 0.2s}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.3)}
+.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap;padding-top:2.5rem;border-top:1px solid var(--border)}
+.stat-num{font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--lime);line-height:1}
+.stat-label{font-size:0.8rem;color:var(--muted);margin-top:4px}
+
+/* hero visual grid */
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:480px;margin-top:3rem}
+.hero-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.2rem;transition:transform 0.3s,border-color 0.3s}
+.hero-card:hover{transform:translateY(-4px);border-color:rgba(200,241,53,0.2)}
+.hero-card-icon{font-size:1.5rem;margin-bottom:0.5rem}
+.hero-card h4{font-family:var(--font-head);font-size:0.9rem;font-weight:700;margin-bottom:0.3rem;letter-spacing:-0.01em}
+.hero-card p{font-size:0.75rem;color:var(--muted);line-height:1.5}
+.hero-card .badge{display:inline-block;background:rgba(200,241,53,0.12);color:var(--lime);font-size:0.65rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:100px;margin-top:0.4rem}
+
+/* ===== MARQUEE ===== */
+.marquee-wrap{background:var(--lime);padding:0.85rem 0;overflow:hidden}
+.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:scroll 22s linear infinite}
+.marquee-track span{font-family:var(--font-head);font-weight:700;font-size:0.78rem;color:var(--black);letter-spacing:0.07em;text-transform:uppercase;flex-shrink:0}
+.marquee-track span::before{content:'✦ ';opacity:0.35}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ===== SECTIONS ===== */
+section{padding:6rem 5%}
+.sec-tag{font-size:0.7rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--lime);margin-bottom:0.8rem}
+h2{font-family:var(--font-head);font-size:clamp(1.9rem,3.8vw,2.9rem);font-weight:800;line-height:1.1;letter-spacing:-0.03em;max-width:560px;margin-bottom:0.9rem}
+.sec-sub{color:var(--muted);font-size:1rem;max-width:480px;line-height:1.75;margin-bottom:3rem}
+
+/* ===== TRUST LOGOS ===== */
+.trust-section{padding:3rem 5%;border-bottom:1px solid var(--border)}
+.trust-label{font-size:0.75rem;color:var(--muted);text-align:center;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem}
+.trust-logos{display:flex;gap:2.5rem;justify-content:center;align-items:center;flex-wrap:wrap}
+.trust-logo{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.2);letter-spacing:-0.02em;transition:color 0.2s}
+.trust-logo:hover{color:rgba(255,255,255,0.4)}
+
+/* ===== SERVICES ===== */
+.services-tabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.stab{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.5rem 1.1rem;border-radius:100px;font-size:0.83rem;cursor:pointer;transition:all 0.2s}
+.stab.active,.stab:hover{background:var(--lime);color:var(--black);border-color:var(--lime);font-weight:600}
+.service-panel{display:none;animation:fadeUp 0.35s ease}
+.service-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sp-img{border-radius:20px;overflow:hidden;aspect-ratio:16/10;background:var(--mid);border:1px solid var(--border);position:relative}
+.sp-img-inner{width:100%;height:100%;object-fit:cover;filter:brightness(0.85)}
+.sp-img-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,241,53,0.08),transparent)}
+.sp-info h3{font-family:var(--font-head);font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.7rem}
+.sp-info p{color:var(--muted);font-size:0.93rem;line-height:1.75;margin-bottom:1.3rem}
+.sp-price-tag{display:inline-block;background:rgba(200,241,53,0.1);border:1px solid rgba(200,241,53,0.25);color:var(--lime);padding:0.4rem 1rem;border-radius:100px;font-size:0.8rem;font-weight:600;margin-bottom:1.3rem}
+.sp-bullets{list-style:none;display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1.8rem}
+.sp-bullets li{font-size:0.88rem;display:flex;gap:0.6rem;color:rgba(255,255,255,0.78)}
+.sp-bullets li::before{content:'→';color:var(--lime);font-weight:700;flex-shrink:0}
+
+/* ===== RESULTS SECTION ===== */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s}
+.result-card:hover{transform:translateY(-4px);border-color:rgba(200,241,53,0.2)}
+.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--lime);opacity:0}
+.result-card:hover::before{opacity:1}
+.result-num{font-family:var(--font-head);font-size:2.5rem;font-weight:800;color:var(--lime);line-height:1;margin-bottom:0.4rem}
+.result-label{font-size:0.9rem;font-weight:500;margin-bottom:0.4rem}
+.result-sub{font-size:0.8rem;color:var(--muted);line-height:1.5}
+
+/* ===== TESTIMONIALS ===== */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;transition:border-color 0.2s}
+.testi-card:hover{border-color:rgba(200,241,53,0.2)}
+.testi-stars{color:var(--lime);font-size:0.85rem;letter-spacing:2px;margin-bottom:1rem}
+.testi-text{font-size:0.9rem;color:rgba(255,255,255,0.8);line-height:1.7;margin-bottom:1.3rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:0.7rem}
+.testi-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0}
+.testi-name{font-size:0.88rem;font-weight:600}
+.testi-role{font-size:0.75rem;color:var(--muted)}
+
+/* ===== PRICING ===== */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;max-width:900px}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2rem;transition:transform 0.2s,border-color 0.2s;position:relative;overflow:hidden}
+.price-card:hover{transform:translateY(-4px);border-color:rgba(200,241,53,0.25)}
+.price-card.featured{border-color:rgba(200,241,53,0.45)}
+.price-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--lime)}
+.price-badge{background:var(--lime);color:var(--black);font-size:0.67rem;font-weight:700;padding:0.2rem 0.7rem;border-radius:100px;display:inline-block;margin-bottom:0.9rem;letter-spacing:0.05em;text-transform:uppercase}
+.price-name{font-family:var(--font-head);font-size:1.2rem;font-weight:800;margin-bottom:0.4rem;letter-spacing:-0.02em}
+.price-desc{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.55}
+.price-amt{font-family:var(--font-head);font-size:2.6rem;font-weight:800;letter-spacing:-0.04em;line-height:1}
+.price-amt sub{font-size:1rem;font-weight:400;opacity:0.6;vertical-align:middle}
+.price-per{font-size:0.78rem;color:var(--muted);margin-bottom:1.6rem;margin-top:0.3rem}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.8rem}
+.price-features li{font-size:0.87rem;color:rgba(255,255,255,0.75);display:flex;gap:0.55rem;align-items:flex-start}
+.price-features li::before{content:'✓';color:var(--lime);font-weight:700;flex-shrink:0}
+.btn-price{display:block;text-align:center;padding:0.78rem;border-radius:100px;font-weight:700;font-size:0.9rem;border:none;cursor:pointer;transition:transform 0.15s;font-family:var(--font-head)}
+.btn-price:hover{transform:translateY(-2px)}
+.btn-price.outline{border:1px solid var(--border);color:var(--white);background:transparent}
+.btn-price.outline:hover{border-color:rgba(255,255,255,0.3)}
+.btn-price.solid{background:var(--lime);color:var(--black)}
+
+/* ===== FAQ ===== */
+.faq-list{max-width:720px;display:flex;flex-direction:column;gap:0.8rem}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.faq-q{padding:1.1rem 1.3rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:500;font-size:0.93rem;transition:background 0.2s}
+.faq-q:hover{background:rgba(255,255,255,0.03)}
+.faq-q .faq-icon{color:var(--lime);font-size:1.1rem;transition:transform 0.2s;flex-shrink:0}
+.faq-q.open .faq-icon{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.2s}
+.faq-a.open{max-height:200px;padding:0 1.3rem 1.1rem}
+.faq-a p{font-size:0.88rem;color:var(--muted);line-height:1.7}
+
+/* ===== CTA BANNER ===== */
+.cta-banner{margin:0 5% 6rem;background:var(--lime);border-radius:26px;padding:4rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:rgba(0,0,0,0.06);pointer-events:none}
+.cta-banner h2{font-family:var(--font-head);font-size:clamp(1.8rem,3.2vw,2.5rem);color:var(--black);font-weight:800;letter-spacing:-0.03em;max-width:480px;margin:0}
+.cta-banner h2 span{opacity:0.4}
+.cta-right p{font-size:0.9rem;color:rgba(10,10,15,0.6);max-width:260px;margin-bottom:1rem}
+.btn-dark{background:var(--black);color:var(--white);padding:0.85rem 1.8rem;border-radius:100px;font-weight:700;font-size:0.92rem;border:none;cursor:pointer;transition:opacity 0.15s;font-family:var(--font-head)}
+.btn-dark:hover{opacity:0.8}
+
+/* ===== FOOTER ===== */
+footer{border-top:1px solid var(--border);padding:3rem 5%;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2rem}
+.foot-brand p{font-size:0.83rem;color:var(--muted);margin-top:0.8rem;line-height:1.65;max-width:220px}
+.foot-col h5{font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.foot-col a{display:block;font-size:0.85rem;color:rgba(255,255,255,0.55);margin-bottom:0.5rem;transition:color 0.2s}
+.foot-col a:hover{color:var(--white)}
+.foot-bottom{border-top:1px solid var(--border);padding:1.5rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.foot-bottom p{font-size:0.78rem;color:var(--muted)}
+
+/* ===== AUTH MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:420px;position:relative}
+.modal-close{position:absolute;top:1rem;right:1rem;background:transparent;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0.3rem;transition:color 0.2s}
+.modal-close:hover{color:var(--white)}
+.modal-logo{font-family:var(--font-head);font-weight:800;font-size:1.2rem;margin-bottom:1.5rem}
+.modal-logo span{color:var(--lime)}
+.modal h3{font-family:var(--font-head);font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem}
+.modal-sub{font-size:0.85rem;color:var(--muted);margin-bottom:2rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem}
+.form-group label{font-size:0.78rem;color:var(--muted);font-weight:500}
+.form-group input,.form-group select,.form-group textarea{background:var(--mid);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--white);font-size:0.9rem;outline:none;transition:border-color 0.2s;width:100%}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:rgba(200,241,53,0.5)}
+.form-group input::placeholder{color:rgba(255,255,255,0.25)}
+.form-submit{width:100%;background:var(--lime);color:var(--black);border:none;padding:0.9rem;border-radius:100px;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:var(--font-head);transition:transform 0.15s,box-shadow 0.15s;margin-top:0.5rem}
+.form-submit:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(200,241,53,0.3)}
+.modal-switch{text-align:center;font-size:0.83rem;color:var(--muted);margin-top:1rem}
+.modal-switch a{color:var(--lime);cursor:pointer;text-decoration:underline}
+.form-error{color:var(--danger);font-size:0.8rem;margin-top:0.3rem;display:none}
+.form-error.show{display:block}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.2rem 0;color:var(--muted);font-size:0.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ===== PAYMENT MODAL ===== */
+.pay-plan-name{font-family:var(--font-head);font-size:1.1rem;font-weight:800;margin-bottom:0.3rem}
+.pay-plan-price{font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--lime);margin-bottom:1.5rem}
+.pay-methods{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem}
+.pay-method{display:flex;align-items:center;gap:0.8rem;background:var(--mid);border:1px solid var(--border);border-radius:12px;padding:0.8rem 1rem;cursor:pointer;transition:border-color 0.2s}
+.pay-method:hover,.pay-method.selected{border-color:rgba(200,241,53,0.5)}
+.pay-method input[type=radio]{accent-color:var(--lime)}
+.pay-method .method-label{font-size:0.9rem}
+.pay-method .method-icons{margin-left:auto;font-size:1.1rem;letter-spacing:2px}
+.pay-card-fields{background:var(--mid);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem;display:none}
+.pay-card-fields.show{display:block}
+.card-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.6rem}
+.pay-success{display:none;text-align:center;padding:1.5rem 0}
+.pay-success .big-check{font-size:3.5rem;margin-bottom:1rem;animation:pop 0.4s ease}
+@keyframes pop{0%{transform:scale(0.5)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.pay-success h3{font-family:var(--font-head);font-size:1.4rem;font-weight:800;margin-bottom:0.5rem}
+.pay-success p{color:var(--muted);font-size:0.88rem;line-height:1.6}
+
+/* ===== DASHBOARD ===== */
+.dashboard{display:none;min-height:100vh;padding:7rem 2.5% 4rem}
+.dashboard.active{display:block}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:1rem}
+.dash-title{font-family:var(--font-head);font-size:1.8rem;font-weight:800;letter-spacing:-0.03em}
+.dash-title span{color:var(--muted);font-size:1rem;font-weight:400;margin-left:0.5rem}
+.dash-tabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.dtab{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.45rem 1rem;border-radius:100px;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
+.dtab.active{background:var(--lime);color:var(--black);border-color:var(--lime);font-weight:600}
+.dash-panel{display:none}
+.dash-panel.active{display:block;animation:fadeUp 0.3s ease}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.metric-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.4rem}
+.metric-val{font-family:var(--font-head);font-size:2rem;font-weight:800;line-height:1}
+.metric-val.lime{color:var(--lime)}
+.metric-val.green{color:var(--success)}
+.metric-label{font-size:0.78rem;color:var(--muted);margin-top:0.3rem}
+.metric-change{font-size:0.72rem;margin-top:0.4rem;font-weight:500}
+.metric-change.up{color:var(--success)}
+.metric-change.down{color:var(--danger)}
+.dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem}
+.dash-card h4{font-family:var(--font-head);font-size:1rem;font-weight:700;margin-bottom:1.2rem;letter-spacing:-0.01em}
+.chart-wrap{height:160px;display:flex;align-items:flex-end;gap:6px}
+.ch-bar{flex:1;border-radius:4px 4px 0 0;background:rgba(200,241,53,0.3);transition:height 0.7s ease;position:relative;cursor:pointer}
+.ch-bar:hover{background:var(--lime)}
+.ch-bar .tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--mid);border:1px solid var(--border);border-radius:6px;padding:0.25rem 0.5rem;font-size:0.68rem;white-space:nowrap;color:var(--white);opacity:0;transition:opacity 0.2s;pointer-events:none}
+.ch-bar:hover .tip{opacity:1}
+.ch-labels{display:flex;gap:6px;margin-top:0.5rem}
+.ch-labels span{flex:1;font-size:0.62rem;color:var(--muted);text-align:center}
+.orders-table{width:100%;border-collapse:collapse}
+.orders-table th{font-size:0.73rem;color:var(--muted);font-weight:500;padding:0.5rem 0.8rem;text-align:left;border-bottom:1px solid var(--border)}
+.orders-table td{font-size:0.82rem;padding:0.7rem 0.8rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+.orders-table tr:hover td{background:rgba(255,255,255,0.02)}
+.status-badge{display:inline-block;font-size:0.68rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:100px}
+.status-badge.paid{background:rgba(46,204,113,0.15);color:var(--success)}
+.status-badge.pending{background:rgba(255,193,7,0.15);color:#ffc107}
+.status-badge.new{background:rgba(200,241,53,0.15);color:var(--lime)}
+.visitors-list{display:flex;flex-direction:column;gap:0.6rem}
+.visitor-row{display:flex;align-items:center;gap:0.8rem;font-size:0.83rem}
+.visitor-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.visitor-bar{height:100%;background:var(--lime);border-radius:3px}
+.visitor-count{font-size:0.8rem;color:var(--muted);min-width:30px;text-align:right}
+.pie-wrap{display:flex;align-items:center;gap:1.5rem}
+.pie-legend{display:flex;flex-direction:column;gap:0.6rem}
+.pie-item{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--muted)}
+.pie-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.activity-feed{display:flex;flex-direction:column;gap:0.8rem}
+.activity-item{display:flex;align-items:flex-start;gap:0.8rem;font-size:0.83rem}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.activity-time{font-size:0.72rem;color:var(--muted);margin-top:0.1rem}
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.client-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;display:flex;align-items:center;gap:1rem}
+.client-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
+.client-info h5{font-size:0.9rem;font-weight:600;margin-bottom:0.2rem}
+.client-info p{font-size:0.78rem;color:var(--muted)}
+.client-badge{margin-left:auto;font-size:0.68rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:100px}
+.revenue-big{font-family:var(--font-head);font-size:3rem;font-weight:800;color:var(--lime);margin-bottom:0.5rem}
+.revenue-sub{font-size:0.9rem;color:var(--muted);margin-bottom:2rem}
+
+/* ===== CLIENT DASHBOARD ===== */
+.client-dash{padding:7rem 5% 4rem;display:none}
+.client-dash.active{display:block}
+.orders-list{display:flex;flex-direction:column;gap:1rem}
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.order-icon{width:48px;height:48px;border-radius:12px;background:rgba(200,241,53,0.1);border:1px solid rgba(200,241,53,0.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.order-info h4{font-size:0.95rem;font-weight:600;margin-bottom:0.25rem}
+.order-info p{font-size:0.8rem;color:var(--muted)}
+.order-price{font-family:var(--font-head);font-size:1.2rem;font-weight:800;color:var(--lime);margin-left:auto}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .service-panel.active,.dash-grid-2{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr 1fr}
+  .hero-grid{grid-template-columns:1fr 1fr;max-width:100%}
+}
+@media(max-width:640px){
+  .nav-links{display:none}
+  h1{font-size:2.4rem}
+  .cta-banner{padding:2.5rem}
+  footer{grid-template-columns:1fr}
+  .hero-grid{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+}
+
+/* ===== UTILS ===== */
+.hidden{display:none!important}
+.loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(0,0,0,0.2);border-top-color:var(--black);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="main-nav">
+  <div class="logo" onclick="showPage('home')">Syn<span>aptic</span></div>
+  <ul class="nav-links">
+    <li><a href="#services" onclick="showPage('home')" data-i18n="nav_services">Services</a></li>
+    <li><a href="#pricing" onclick="showPage('home')" data-i18n="nav_pricing">Pricing</a></li>
+    <li><a href="#results" onclick="showPage('home')" data-i18n="nav_results">Results</a></li>
+    <li><a href="#faq" onclick="showPage('home')" data-i18n="nav_faq">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <select class="lang-select" id="lang-picker" onchange="setLang(this.value)">
+      <option value="en">🇬🇧 EN</option>
+      <option value="nl">🇳🇱 NL</option>
+      <option value="fr">🇫🇷 FR</option>
+      <option value="es">🇪🇸 ES</option>
+      <option value="zh">🇨🇳 ZH</option>
+      <option value="de">🇩🇪 DE</option>
+    </select>
+    <button class="btn-nav ghost" id="nav-login-btn" onclick="openModal('login')" data-i18n="nav_login">Log in</button>
+    <button class="btn-nav lime" id="nav-signup-btn" onclick="openModal('signup')" data-i18n="nav_signup">Get started</button>
+    <button class="btn-nav lime hidden" id="nav-dash-btn" onclick="goToDash()">Dashboard</button>
+    <button class="btn-nav ghost hidden" id="nav-logout-btn" onclick="logout()">Log out</button>
+  </div>
+</nav>
+
+<!-- ===== HOME PAGE ===== -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-tag" data-i18n="hero_tag">AI Automation Agency</div>
+    <h1 data-i18n="hero_h1">Stop doing work<br>that <em>machines</em><br>can do better.</h1>
+    <p class="hero-sub" data-i18n="hero_sub">We plug AI directly into your business — handling customer questions, follow-ups, scheduling, and admin so you can focus on what actually grows your revenue.</p>
+    <div class="hero-btns">
+      <button class="btn-lime" onclick="openModal('signup')" data-i18n="hero_cta1">Book a free audit →</button>
+      <button class="btn-ghost" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta2">See what we automate</button>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-card">
+        <div class="hero-card-icon">🤖</div>
+        <h4 data-i18n="hc1_title">AI Chatbot</h4>
+        <p data-i18n="hc1_desc">Answers customers 24/7</p>
+        <span class="badge" data-i18n="hc1_badge">Live in 48hrs</span>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-icon">📬</div>
+        <h4 data-i18n="hc2_title">Lead Follow-Up</h4>
+        <p data-i18n="hc2_desc">Never lose a lead again</p>
+        <span class="badge" data-i18n="hc2_badge">3–5x more conversions</span>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-icon">📅</div>
+        <h4 data-i18n="hc3_title">Auto Scheduling</h4>
+        <p data-i18n="hc3_desc">Clients book themselves</p>
+        <span class="badge" data-i18n="hc3_badge">Zero back-and-forth</span>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-icon">📊</div>
+        <h4 data-i18n="hc4_title">Finance Reports</h4>
+        <p data-i18n="hc4_desc">Plain-English weekly digest</p>
+        <span class="badge" data-i18n="hc4_badge">Know your numbers</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>AI Chatbots</span><span>Lead Automation</span><span>Smart Scheduling</span><span>Bookkeeping AI</span><span>Email Sorting</span><span>CRM Integration</span><span>24/7 Support Bots</span><span>Workflow Automation</span>
+      <span>AI Chatbots</span><span>Lead Automation</span><span>Smart Scheduling</span><span>Bookkeeping AI</span><span>Email Sorting</span><span>CRM Integration</span><span>24/7 Support Bots</span><span>Workflow Automation</span>
+    </div>
+  </div>
+
+  <!-- TRUST -->
+  <div class="trust-section">
+    <p class="trust-label" data-i18n="trust_label">Trusted by small businesses across industries</p>
+    <div class="trust-logos">
+      <span class="trust-logo">FitLife Gym</span>
+      <span class="trust-logo">Bloom Salon</span>
+      <span class="trust-logo">KeyRealty</span>
+      <span class="trust-logo">LexAI Law</span>
+      <span class="trust-logo">NovaCafe</span>
+      <span class="trust-logo">BuildRight</span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="sec-tag" data-i18n="services_tag">What we build</div>
+    <h2 data-i18n="services_h2">Real automation. Real results.</h2>
+    <p class="sec-sub" data-i18n="services_sub">Every service is custom-built for your business. Not templates — actual systems that work from day one.</p>
+    <div class="services-tabs">
+      <button class="stab active" onclick="showSvc('chatbot',this)">🤖 <span data-i18n="svc_tab1">AI Chatbot</span></button>
+      <button class="stab" onclick="showSvc('leads',this)">📬 <span data-i18n="svc_tab2">Lead Follow-Up</span></button>
+      <button class="stab" onclick="showSvc('booking',this)">📅 <span data-i18n="svc_tab3">Scheduling</span></button>
+      <button class="stab" onclick="showSvc('books',this)">📊 <span data-i18n="svc_tab4">Bookkeeping</span></button>
+      <button class="stab" onclick="showSvc('email',this)">📧 <span data-i18n="svc_tab5">Email Automation</span></button>
+    </div>
+
+    <div class="service-panel active" id="svc-chatbot">
+      <div class="sp-img">
+        <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=800&q=80" alt="AI chatbot" class="sp-img-inner">
+        <div class="sp-img-overlay"></div>
+      </div>
+      <div class="sp-info">
+        <h3 data-i18n="svc1_h">AI Customer Service Chatbot</h3>
+        <p data-i18n="svc1_p">A smart assistant trained on your business that answers questions 24/7. No missed messages, no extra staff costs, no lost customers.</p>
+        <div class="sp-price-tag" data-i18n="svc1_price">From $149 setup · $79/mo managed</div>
+        <ul class="sp-bullets">
+          <li data-i18n="svc1_b1">Trained on your FAQ, pricing & services</li>
+          <li data-i18n="svc1_b2">Works on website, Instagram & WhatsApp</li>
+          <li data-i18n="svc1_b3">Escalates only what it can't handle</li>
+          <li data-i18n="svc1_b4">Live in under 48 hours</li>
+        </ul>
+        <button class="btn-lime" onclick="buyPlan('chatbot')" data-i18n="svc_buy">Get this built →</button>
+      </div>
+    </div>
+
+    <div class="service-panel" id="svc-leads">
+      <div class="sp-img">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Lead automation" class="sp-img-inner">
+        <div class="sp-img-overlay"></div>
+      </div>
+      <div class="sp-info">
+        <h3 data-i18n="svc2_h">Lead Follow-Up Automation</h3>
+        <p data-i18n="svc2_p">Every new inquiry gets a personalized reply within minutes. Then a smart sequence that converts them before a competitor even picks up the phone.</p>
+        <div class="sp-price-tag" data-i18n="svc2_price">From $179 setup · $89/mo managed</div>
+        <ul class="sp-bullets">
+          <li data-i18n="svc2_b1">Instant reply the moment someone inquires</li>
+          <li data-i18n="svc2_b2">3-step sequence over 7 days</li>
+          <li data-i18n="svc2_b3">Stops when they book or respond</li>
+          <li data-i18n="svc2_b4">Average 3–5x more conversions</li>
+        </ul>
+        <button class="btn-lime" onclick="buyPlan('leads')" data-i18n="svc_buy">Get this built →</button>
+      </div>
+    </div>
+
+    <div class="service-panel" id="svc-booking">
+      <div class="sp-img">
+        <img src="https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=800&q=80" alt="Smart scheduling" class="sp-img-inner">
+        <div class="sp-img-overlay"></div>
+      </div>
+      <div class="sp-info">
+        <h3 data-i18n="svc3_h">Smart Scheduling System</h3>
+        <p data-i18n="svc3_p">Replace the endless email back-and-forth. Clients book, get reminders, and reschedule automatically — without you touching anything.</p>
+        <div class="sp-price-tag" data-i18n="svc3_price">From $99 setup · $49/mo managed</div>
+        <ul class="sp-bullets">
+          <li data-i18n="svc3_b1">Self-booking from your site, link or bio</li>
+          <li data-i18n="svc3_b2">Auto confirmation + reminders</li>
+          <li data-i18n="svc3_b3">Syncs with Google Calendar or Outlook</li>
+          <li data-i18n="svc3_b4">Eliminates 90% of scheduling friction</li>
+        </ul>
+        <button class="btn-lime" onclick="buyPlan('booking')" data-i18n="svc_buy">Get this built →</button>
+      </div>
+    </div>
+
+    <div class="service-panel" id="svc-books">
+      <div class="sp-img">
+        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80" alt="Bookkeeping" class="sp-img-inner">
+        <div class="sp-img-overlay"></div>
+      </div>
+      <div class="sp-info">
+        <h3 data-i18n="svc4_h">Bookkeeping Summary Reports</h3>
+        <p data-i18n="svc4_p">Get a plain-English weekly snapshot of your numbers delivered to your inbox. No accountant needed. Just clarity.</p>
+        <div class="sp-price-tag" data-i18n="svc4_price">From $149 setup · $69/mo managed</div>
+        <ul class="sp-bullets">
+          <li data-i18n="svc4_b1">Weekly plain-English financial summary</li>
+          <li data-i18n="svc4_b2">Flags unusual spending automatically</li>
+          <li data-i18n="svc4_b3">Connects to QuickBooks, Wave or Stripe</li>
+          <li data-i18n="svc4_b4">Month-over-month trend tracking</li>
+        </ul>
+        <button class="btn-lime" onclick="buyPlan('books')" data-i18n="svc_buy">Get this built →</button>
+      </div>
+    </div>
+
+    <div class="service-panel" id="svc-email">
+      <div class="sp-img">
+        <img src="https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=800&q=80" alt="Email automation" class="sp-img-inner">
+        <div class="sp-img-overlay"></div>
+      </div>
+      <div class="sp-info">
+        <h3 data-i18n="svc5_h">Email & Inbox Automation</h3>
+        <p data-i18n="svc5_p">Your inbox sorts, drafts, and responds automatically. Urgent emails get flagged. Newsletters get archived. You get 2 hours back every day.</p>
+        <div class="sp-price-tag" data-i18n="svc5_price">From $129 setup · $59/mo managed</div>
+        <ul class="sp-bullets">
+          <li data-i18n="svc5_b1">Auto-categorize and label emails</li>
+          <li data-i18n="svc5_b2">Draft replies to common inquiries</li>
+          <li data-i18n="svc5_b3">Flag urgent messages instantly</li>
+          <li data-i18n="svc5_b4">Save 1–2 hours every single day</li>
+        </ul>
+        <button class="btn-lime" onclick="buyPlan('email')" data-i18n="svc_buy">Get this built →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" style="background:var(--mid)">
+    <div class="sec-tag" data-i18n="results_tag">Proven results</div>
+    <h2 data-i18n="results_h2">Numbers that speak for themselves</h2>
+    <p class="sec-sub" data-i18n="results_sub">Real data from businesses we've automated in the past 12 months.</p>
+    <div class="results-grid">
+      <div class="result-card"><div class="result-num">8.4hrs</div><div class="result-label" data-i18n="r1_label">Saved per week</div><div class="result-sub" data-i18n="r1_sub">Average across all clients</div></div>
+      <div class="result-card"><div class="result-num">4.1x</div><div class="result-label" data-i18n="r2_label">More leads converted</div><div class="result-sub" data-i18n="r2_sub">With automated follow-up</div></div>
+      <div class="result-card"><div class="result-num">92%</div><div class="result-label" data-i18n="r3_label">Fewer missed messages</div><div class="result-sub" data-i18n="r3_sub">After chatbot deployment</div></div>
+      <div class="result-card"><div class="result-num">72hrs</div><div class="result-label" data-i18n="r4_label">Average setup time</div><div class="result-sub" data-i18n="r4_sub">From audit to live</div></div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section>
+    <div class="sec-tag" data-i18n="testi_tag">Client stories</div>
+    <h2 data-i18n="testi_h2">What business owners are saying</h2>
+    <p class="sec-sub" data-i18n="testi_sub">Real results from real people who were exactly where you are.</p>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text" data-i18n="t1_text">"I was spending 3 hours a day just replying to the same questions. Synaptic set up a chatbot in two days and I haven't answered a routine message since. Genuinely changed my business."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(200,241,53,0.15);color:var(--lime)">MJ</div>
+          <div><div class="testi-name">Marcus Johnson</div><div class="testi-role">FitLife Gym Owner</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text" data-i18n="t2_text">"The lead follow-up automation paid for itself in the first week. We used to lose people just because we were too busy to reply fast. That doesn't happen anymore."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(91,76,245,0.2);color:#8b7fff">SC</div>
+          <div><div class="testi-name">Sofia Chen</div><div class="testi-role">Real Estate Agent</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text" data-i18n="t3_text">"The scheduling system alone saves me hours every week. Clients book themselves, get reminded automatically, and I just show up. It's exactly what a small business needs."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(46,204,113,0.15);color:var(--success)">AK</div>
+          <div><div class="testi-name">Aisha Kofi</div><div class="testi-role">Bloom Salon Owner</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" style="background:var(--mid)">
+    <div class="sec-tag" data-i18n="pricing_tag">Pricing</div>
+    <h2 data-i18n="pricing_h2">Built for small business budgets</h2>
+    <p class="sec-sub" data-i18n="pricing_sub">No lock-in contracts. No hidden fees. Cancel any time.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name" data-i18n="p1_name">Starter</div>
+        <div class="price-desc" data-i18n="p1_desc">One automation, built and handed to you.</div>
+        <div class="price-amt"><sub>$</sub>149<sub>–</sub><sub>$</sub>299</div>
+        <div class="price-per" data-i18n="p1_per">one-time setup fee</div>
+        <ul class="price-features">
+          <li data-i18n="p1_f1">1 custom automation built</li>
+          <li data-i18n="p1_f2">30-min strategy call</li>
+          <li data-i18n="p1_f3">7-day post-launch support</li>
+          <li data-i18n="p1_f4">Full ownership — yours to keep</li>
+        </ul>
+        <button class="btn-price outline" onclick="buyPlan('starter')" data-i18n="p_btn1">Get started →</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge" data-i18n="p2_badge">Most popular</div>
+        <div class="price-name" data-i18n="p2_name">Growth</div>
+        <div class="price-desc" data-i18n="p2_desc">Full build + ongoing management every month.</div>
+        <div class="price-amt"><sub>$</sub>149<span style="font-size:1rem;opacity:0.5">/mo</span></div>
+        <div class="price-per" data-i18n="p2_per">after $299 setup · cancel anytime</div>
+        <ul class="price-features">
+          <li data-i18n="p2_f1">Up to 3 automations built</li>
+          <li data-i18n="p2_f2">Monthly performance reviews</li>
+          <li data-i18n="p2_f3">Updates & improvements included</li>
+          <li data-i18n="p2_f4">Priority same-day support</li>
+          <li data-i18n="p2_f5">New tools added as you scale</li>
+        </ul>
+        <button class="btn-price solid" onclick="buyPlan('growth')" data-i18n="p_btn2">Book your audit →</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name" data-i18n="p3_name">Pro</div>
+        <div class="price-desc" data-i18n="p3_desc">Maximum automation for growing businesses.</div>
+        <div class="price-amt"><sub>$</sub>299<span style="font-size:1rem;opacity:0.5">/mo</span></div>
+        <div class="price-per" data-i18n="p3_per">after $499 setup · cancel anytime</div>
+        <ul class="price-features">
+          <li data-i18n="p3_f1">Unlimited automations</li>
+          <li data-i18n="p3_f2">Dedicated account manager</li>
+          <li data-i18n="p3_f3">Custom API integrations</li>
+          <li data-i18n="p3_f4">Weekly check-ins</li>
+          <li data-i18n="p3_f5">Team training included</li>
+        </ul>
+        <button class="btn-price outline" onclick="buyPlan('pro')" data-i18n="p_btn3">Let's talk →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="sec-tag" data-i18n="faq_tag">FAQ</div>
+    <h2 data-i18n="faq_h2">Questions we always get</h2>
+    <div class="faq-list" id="faq-list"></div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <h2 data-i18n="cta_h2">Ready to stop doing everything manually? <span>Let's fix that.</span></h2>
+    <div class="cta-right">
+      <p data-i18n="cta_p">Book a free audit. We'll find what's costing you the most time and show you exactly how to automate it.</p>
+      <button class="btn-dark" onclick="openModal('signup')" data-i18n="cta_btn">Get started free →</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-brand">
+      <div class="logo">Syn<span>aptic</span></div>
+      <p data-i18n="foot_desc">AI automation for small businesses that want to grow without burning out.</p>
+    </div>
+    <div class="foot-col">
+      <h5 data-i18n="foot_services">Services</h5>
+      <a href="#" onclick="showSvcTab('chatbot')">AI Chatbot</a>
+      <a href="#" onclick="showSvcTab('leads')">Lead Follow-Up</a>
+      <a href="#" onclick="showSvcTab('booking')">Scheduling</a>
+      <a href="#" onclick="showSvcTab('books')">Bookkeeping</a>
+      <a href="#" onclick="showSvcTab('email')">Email Automation</a>
+    </div>
+    <div class="foot-col">
+      <h5 data-i18n="foot_company">Company</h5>
+      <a href="#results">Results</a>
+      <a href="#faq">FAQ</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="foot-col">
+      <h5 data-i18n="foot_contact">Contact</h5>
+      <a href="mailto:hello@synapticagency.co">hello@synapticagency.co</a>
+    </div>
+  </footer>
+  <div class="foot-bottom">
+    <p>© 2026 Synaptic. All rights reserved.</p>
+    <p data-i18n="foot_tagline">Built for the businesses that never stop.</p>
+  </div>
+
+</div><!-- end page-home -->
+
+<!-- ===== OWNER DASHBOARD PAGE ===== -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard active" id="owner-dash">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Owner Dashboard <span id="dash-greeting"></span></div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:4px">Real-time overview of your Synaptic business</div>
+      </div>
+      <div style="display:flex;gap:0.7rem;align-items:center">
+        <div style="font-size:0.78rem;color:var(--muted)">Last updated: just now</div>
+        <button class="btn-lime" onclick="refreshDash()" style="padding:0.4rem 1rem;font-size:0.82rem">↻ Refresh</button>
+      </div>
+    </div>
+
+    <div class="dash-tabs">
+      <button class="dtab active" onclick="showDashPanel('overview',this)">📊 Overview</button>
+      <button class="dtab" onclick="showDashPanel('orders',this)">🛒 Orders</button>
+      <button class="dtab" onclick="showDashPanel('clients',this)">👥 Clients</button>
+      <button class="dtab" onclick="showDashPanel('traffic',this)">🌐 Traffic</button>
+      <button class="dtab" onclick="showDashPanel('revenue',this)">💰 Revenue</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="dash-panel active" id="dp-overview">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-val lime" id="m-revenue">$0</div><div class="metric-label">Total Revenue</div><div class="metric-change up" id="m-rev-change">+0% this month</div></div>
+        <div class="metric-card"><div class="metric-val" id="m-orders">0</div><div class="metric-label">Total Orders</div><div class="metric-change up" id="m-ord-change">+0 this week</div></div>
+        <div class="metric-card"><div class="metric-val" id="m-visitors">0</div><div class="metric-label">Site Visitors</div><div class="metric-change up">+12% this week</div></div>
+        <div class="metric-card"><div class="metric-val green" id="m-clients">0</div><div class="metric-label">Active Clients</div><div class="metric-change up">All in good standing</div></div>
+        <div class="metric-card"><div class="metric-val" id="m-mrr">$0</div><div class="metric-label">Monthly Recurring</div><div class="metric-change up" id="m-mrr-change">+$0 this month</div></div>
+        <div class="metric-card"><div class="metric-val" id="m-conv">0%</div><div class="metric-label">Conversion Rate</div><div class="metric-change up">+1.2% this week</div></div>
+      </div>
+      <div class="dash-grid-2">
+        <div class="dash-card">
+          <h4>Revenue This Week ($)</h4>
+          <div class="chart-wrap" id="rev-chart"></div>
+          <div class="ch-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        </div>
+        <div class="dash-card">
+          <h4>Recent Activity</h4>
+          <div class="activity-feed" id="activity-feed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="dash-panel" id="dp-orders">
+      <div class="dash-card" style="margin-bottom:1.5rem">
+        <h4>All Orders</h4>
+        <div style="overflow-x:auto">
+          <table class="orders-table">
+            <thead><tr><th>Order ID</th><th>Client</th><th>Plan</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTS -->
+    <div class="dash-panel" id="dp-clients">
+      <h4 style="font-family:var(--font-head);font-weight:700;margin-bottom:1.2rem">Active Clients (<span id="client-count">0</span>)</h4>
+      <div class="clients-grid" id="clients-grid"></div>
+    </div>
+
+    <!-- TRAFFIC -->
+    <div class="dash-panel" id="dp-traffic">
+      <div class="dash-grid-2">
+        <div class="dash-card">
+          <h4>Visitors by Day</h4>
+          <div class="chart-wrap" id="traffic-chart"></div>
+          <div class="ch-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        </div>
+        <div class="dash-card">
+          <h4>Top Traffic Sources</h4>
+          <div class="visitors-list" id="traffic-sources"></div>
+        </div>
+        <div class="dash-card">
+          <h4>Top Pages</h4>
+          <div class="visitors-list" id="top-pages"></div>
+        </div>
+        <div class="dash-card">
+          <h4>Devices</h4>
+          <div class="pie-wrap" id="device-breakdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVENUE -->
+    <div class="dash-panel" id="dp-revenue">
+      <div class="revenue-big" id="total-revenue-big">$0</div>
+      <div class="revenue-sub">Total revenue all time</div>
+      <div class="dash-grid-2">
+        <div class="dash-card">
+          <h4>Monthly Revenue</h4>
+          <div class="chart-wrap" id="monthly-chart"></div>
+          <div class="ch-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+        </div>
+        <div class="dash-card">
+          <h4>Revenue by Service</h4>
+          <div class="visitors-list" id="revenue-by-service"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CLIENT DASHBOARD PAGE ===== -->
+<div id="page-client" class="page">
+  <div class="client-dash active">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">My Dashboard <span id="client-greeting"></span></div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:4px">Your active services and account overview</div>
+      </div>
+    </div>
+    <div class="dash-grid-2" style="margin-bottom:2rem">
+      <div class="metric-card"><div class="metric-val lime" id="cl-services">0</div><div class="metric-label">Active Services</div></div>
+      <div class="metric-card"><div class="metric-val" id="cl-spent">$0</div><div class="metric-label">Total Invested</div></div>
+    </div>
+    <h4 style="font-family:var(--font-head);font-weight:700;margin-bottom:1.2rem">Your Active Services</h4>
+    <div class="orders-list" id="client-orders-list">
+      <div style="color:var(--muted);font-size:0.9rem;padding:2rem 0">No active services yet. <a href="#" onclick="showPage('home');window.scrollTo(0,0)" style="color:var(--lime)">Browse our plans →</a></div>
+    </div>
+    <div style="margin-top:2rem">
+      <button class="btn-lime" onclick="showPage('home');document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Add a new service →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AUTH MODAL ===== -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="auth-modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-logo">Syn<span>aptic</span></div>
+
+    <div id="modal-login">
+      <h3 data-i18n="login_h">Welcome back</h3>
+      <p class="modal-sub" data-i18n="login_sub">Log in to access your dashboard</p>
+      <div class="form-group"><label data-i18n="form_email">Email</label><input type="email" id="login-email" placeholder="you@example.com"></div>
+      <div class="form-group"><label data-i18n="form_pass">Password</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+      <div class="form-error" id="login-error">Invalid email or password.</div>
+      <button class="form-submit" onclick="doLogin()" data-i18n="login_btn">Log in →</button>
+      <div class="modal-switch" data-i18n="login_switch">No account? <a onclick="openModal('signup')">Sign up free</a></div>
+    </div>
+
+    <div id="modal-signup" style="display:none">
+      <h3 data-i18n="signup_h">Create your account</h3>
+      <p class="modal-sub" data-i18n="signup_sub">Free to join. No credit card needed.</p>
+      <div class="form-group"><label data-i18n="form_name">Full name</label><input type="text" id="signup-name" placeholder="Your full name"></div>
+      <div class="form-group"><label data-i18n="form_email">Email</label><input type="email" id="signup-email" placeholder="you@example.com"></div>
+      <div class="form-group"><label data-i18n="form_pass">Password</label><input type="password" id="signup-pass" placeholder="Create a password"></div>
+      <div class="form-error" id="signup-error">Please fill in all fields.</div>
+      <button class="form-submit" onclick="doSignup()" data-i18n="signup_btn">Create account →</button>
+      <div class="modal-switch" data-i18n="signup_switch">Already have an account? <a onclick="openModal('login')">Log in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAYMENT MODAL ===== -->
+<div class="modal-overlay" id="pay-overlay" onclick="closePayOutside(event)">
+  <div class="modal" id="pay-modal" style="max-width:480px">
+    <button class="modal-close" onclick="closePay()">✕</button>
+    <div id="pay-body">
+      <div class="modal-logo">Syn<span>aptic</span></div>
+      <div class="pay-plan-name" id="pay-plan-name">Growth Plan</div>
+      <div class="pay-plan-price" id="pay-plan-price">$149/mo</div>
+
+      <div class="pay-methods">
+        <label class="pay-method selected" id="pm-card">
+          <input type="radio" name="paymethod" value="card" checked onchange="selectPayMethod('card')">
+          <span class="method-label">Credit / Debit Card</span>
+          <span class="method-icons">💳</span>
+        </label>
+        <label class="pay-method" id="pm-paypal">
+          <input type="radio" name="paymethod" value="paypal" onchange="selectPayMethod('paypal')">
+          <span class="method-label">PayPal</span>
+          <span class="method-icons">🅿️</span>
+        </label>
+        <label class="pay-method" id="pm-apple">
+          <input type="radio" name="paymethod" value="apple" onchange="selectPayMethod('apple')">
+          <span class="method-label">Apple Pay</span>
+          <span class="method-icons">🍎</span>
+        </label>
+        <label class="pay-method" id="pm-google">
+          <input type="radio" name="paymethod" value="google" onchange="selectPayMethod('google')">
+          <span class="method-label">Google Pay</span>
+          <span class="method-icons">🔵</span>
+        </label>
+      </div>
+
+      <div class="pay-card-fields show" id="card-fields">
+        <div class="form-group" style="margin:0 0 0.6rem"><label>Card number</label><input type="text" id="card-num" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)"></div>
+        <div class="card-row">
+          <div class="form-group" style="margin:0"><label>Expiry</label><input type="text" placeholder="MM/YY" maxlength="5"></div>
+          <div class="form-group" style="margin:0"><label>CVC</label><input type="text" placeholder="123" maxlength="3"></div>
+        </div>
+        <div class="form-group" style="margin-top:0.6rem;margin-bottom:0"><label>Name on card</label><input type="text" placeholder="Your name"></div>
+      </div>
+
+      <div style="background:rgba(200,241,53,0.06);border:1px solid rgba(200,241,53,0.15);border-radius:10px;padding:0.8rem 1rem;margin:1rem 0;font-size:0.82rem;color:var(--muted)">
+        🔒 Payments are secured and encrypted. Your card is processed via Stripe.
+      </div>
+      <button class="form-submit" id="pay-btn" onclick="processPayment()">Complete Purchase →</button>
+    </div>
+    <div class="pay-success" id="pay-success">
+      <div class="big-check">🎉</div>
+      <h3>Payment Confirmed!</h3>
+      <p>Your service has been activated. We'll reach out within 24 hours to kick things off.<br><br>Check your dashboard for updates.</p>
+      <button class="btn-lime" onclick="closePay();goToDash()" style="margin-top:1.2rem;border:none">View my dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+// STATE
+// =============================================
+const OWNER_EMAIL = 'owner@synaptic.co';
+const OWNER_PASS  = 'synaptic2026';
+let currentUser = JSON.parse(localStorage.getItem('syn_user') || 'null');
+let users   = JSON.parse(localStorage.getItem('syn_users')   || '[]');
+let orders  = JSON.parse(localStorage.getItem('syn_orders')  || '[]');
+let visitors = parseInt(localStorage.getItem('syn_visitors') || '0') + Math.floor(Math.random()*3)+1;
+localStorage.setItem('syn_visitors', visitors);
+
+const PLANS = {
+  starter:  {name:'Starter Plan',    price:'$149–$299', amount:149},
+  chatbot:  {name:'AI Chatbot',       price:'From $149', amount:149},
+  leads:    {name:'Lead Follow-Up',   price:'From $179', amount:179},
+  booking:  {name:'Scheduling Setup', price:'From $99',  amount:99},
+  books:    {name:'Bookkeeping AI',   price:'From $149', amount:149},
+  email:    {name:'Email Automation', price:'From $129', amount:129},
+  growth:   {name:'Growth Plan',      price:'$149/mo',   amount:149},
+  pro:      {name:'Pro Plan',         price:'$299/mo',   amount:299},
+};
+
+let currentPlan = null;
+
+// =============================================
+// TRANSLATIONS
+// =============================================
+const T = {
+  en:{
+    nav_services:'Services',nav_pricing:'Pricing',nav_results:'Results',nav_faq:'FAQ',
+    nav_login:'Log in',nav_signup:'Get started',
+    hero_tag:'AI Automation Agency',
+    hero_h1:'Stop doing work that <em>machines</em> can do better.',
+    hero_sub:'We plug AI directly into your business — handling customer questions, follow-ups, scheduling, and admin so you can focus on what actually grows your revenue.',
+    hero_cta1:'Book a free audit →',hero_cta2:'See what we automate',
+    hc1_title:'AI Chatbot',hc1_desc:'Answers customers 24/7',hc1_badge:'Live in 48hrs',
+    hc2_title:'Lead Follow-Up',hc2_desc:'Never lose a lead again',hc2_badge:'3–5x more conversions',
+    hc3_title:'Auto Scheduling',hc3_desc:'Clients book themselves',hc3_badge:'Zero back-and-forth',
+    hc4_title:'Finance Reports',hc4_desc:'Plain-English weekly digest',hc4_badge:'Know your numbers',
+    trust_label:'Trusted by small businesses across industries',
+    services_tag:'What we build',services_h2:'Real automation. Real results.',
+    services_sub:'Every service is custom-built for your business. Not templates — actual systems that work from day one.',
+    svc_tab1:'AI Chatbot',svc_tab2:'Lead Follow-Up',svc_tab3:'Scheduling',svc_tab4:'Bookkeeping',svc_tab5:'Email Automation',
+    svc1_h:'AI Customer Service Chatbot',svc1_p:'A smart assistant trained on your business that answers questions 24/7. No missed messages, no extra staff costs.',
+    svc1_price:'From $149 setup · $79/mo managed',
+    svc1_b1:'Trained on your FAQ, pricing & services',svc1_b2:'Works on website, Instagram & WhatsApp',svc1_b3:'Escalates only what it can\'t handle',svc1_b4:'Live in under 48 hours',
+    svc_buy:'Get this built →',
+    results_tag:'Proven results',results_h2:'Numbers that speak for themselves',results_sub:'Real data from businesses we\'ve automated in the past 12 months.',
+    r1_label:'Saved per week',r1_sub:'Average across all clients',
+    r2_label:'More leads converted',r2_sub:'With automated follow-up',
+    r3_label:'Fewer missed messages',r3_sub:'After chatbot deployment',
+    r4_label:'Average setup time',r4_sub:'From audit to live',
+    testi_tag:'Client stories',testi_h2:'What business owners are saying',testi_sub:'Real results from real people who were exactly where you are.',
+    t1_text:'"I was spending 3 hours a day just replying to the same questions. Synaptic set up a chatbot in two days and I haven\'t answered a routine message since."',
+    t2_text:'"The lead follow-up automation paid for itself in the first week. We used to lose people just because we were too busy to reply fast."',
+    t3_text:'"The scheduling system alone saves me hours every week. Clients book themselves, get reminded automatically, and I just show up."',
+    pricing_tag:'Pricing',pricing_h2:'Built for small business budgets',pricing_sub:'No lock-in contracts. No hidden fees. Cancel any time.',
+    p1_name:'Starter',p1_desc:'One automation, built and handed to you.',p1_per:'one-time setup fee',
+    p1_f1:'1 custom automation built',p1_f2:'30-min strategy call',p1_f3:'7-day post-launch support',p1_f4:'Full ownership — yours to keep',
+    p2_badge:'Most popular',p2_name:'Growth',p2_desc:'Full build + ongoing management every month.',p2_per:'after $299 setup · cancel anytime',
+    p2_f1:'Up to 3 automations built',p2_f2:'Monthly performance reviews',p2_f3:'Updates & improvements included',p2_f4:'Priority same-day support',p2_f5:'New tools added as you scale',
+    p3_name:'Pro',p3_desc:'Maximum automation for growing businesses.',p3_per:'after $499 setup · cancel anytime',
+    p3_f1:'Unlimited automations',p3_f2:'Dedicated account manager',p3_f3:'Custom API integrations',p3_f4:'Weekly check-ins',p3_f5:'Team training included',
+    p_btn1:'Get started →',p_btn2:'Book your audit →',p_btn3:"Let's talk →",
+    faq_tag:'FAQ',faq_h2:'Questions we always get',
+    cta_h2:'Ready to stop doing everything manually?',cta_p:'Book a free audit. We\'ll find what\'s costing you the most time and show you exactly how to automate it.',cta_btn:'Get started free →',
+    foot_desc:'AI automation for small businesses that want to grow without burning out.',
+    foot_services:'Services',foot_company:'Company',foot_contact:'Contact',
+    foot_tagline:'Built for the businesses that never stop.',
+    login_h:'Welcome back',login_sub:'Log in to access your dashboard',login_btn:'Log in →',login_switch:'No account? ',
+    signup_h:'Create your account',signup_sub:'Free to join. No credit card needed.',signup_btn:'Create account →',signup_switch:'Already have an account? ',
+    form_email:'Email',form_pass:'Password',form_name:'Full name',
+    svc2_h:'Lead Follow-Up Automation',svc2_p:'Every new inquiry gets a personalized reply within minutes. Then a smart sequence that converts them before a competitor even picks up the phone.',
+    svc2_price:'From $179 setup · $89/mo managed',svc2_b1:'Instant reply the moment someone inquires',svc2_b2:'3-step sequence over 7 days',svc2_b3:'Stops when they book or respond',svc2_b4:'Average 3–5x more conversions',
+    svc3_h:'Smart Scheduling System',svc3_p:'Replace the endless email back-and-forth. Clients book, get reminders, and reschedule automatically.',
+    svc3_price:'From $99 setup · $49/mo managed',svc3_b1:'Self-booking from your site, link or bio',svc3_b2:'Auto confirmation + reminders',svc3_b3:'Syncs with Google Calendar or Outlook',svc3_b4:'Eliminates 90% of scheduling friction',
+    svc4_h:'Bookkeeping Summary Reports',svc4_p:'Get a plain-English weekly snapshot of your numbers delivered to your inbox. No accountant needed.',
+    svc4_price:'From $149 setup · $69/mo managed',svc4_b1:'Weekly plain-English financial summary',svc4_b2:'Flags unusual spending automatically',svc4_b3:'Connects to QuickBooks, Wave or Stripe',svc4_b4:'Month-over-month trend tracking',
+    svc5_h:'Email & Inbox Automation',svc5_p:'Your inbox sorts, drafts, and responds automatically. Urgent emails get flagged. Newsletters get archived. You get 2 hours back every day.',
+    svc5_price:'From $129 setup · $59/mo managed',svc5_b1:'Auto-categorize and label emails',svc5_b2:'Draft replies to common inquiries',svc5_b3:'Flag urgent messages instantly',svc5_b4:'Save 1–2 hours every single day',
+  },
+  nl:{
+    nav_services:'Diensten',nav_pricing:'Prijzen',nav_results:'Resultaten',nav_faq:'FAQ',
+    nav_login:'Inloggen',nav_signup:'Aan de slag',
+    hero_tag:'AI-Automatiseringsagentschap',
+    hero_h1:'Stop met werk doen dat <em>machines</em> beter kunnen.',
+    hero_sub:'Wij integreren AI direct in uw bedrijf — zodat u zich kunt richten op wat uw omzet echt laat groeien.',
+    hero_cta1:'Boek een gratis audit →',hero_cta2:'Bekijk wat we automatiseren',
+    hc1_title:'AI Chatbot',hc1_desc:'Beantwoordt klanten 24/7',hc1_badge:'Live in 48 uur',
+    hc2_title:'Lead Follow-Up',hc2_desc:'Verlies nooit meer een lead',hc2_badge:'3–5x meer conversies',
+    hc3_title:'Auto Planning',hc3_desc:'Klanten boeken zichzelf',hc3_badge:'Geen heen-en-weer meer',
+    hc4_title:'Financieel Rapport',hc4_desc:'Wekelijks begrijpelijk overzicht',hc4_badge:'Ken uw cijfers',
+    trust_label:'Vertrouwd door kleine bedrijven in alle sectoren',
+    services_tag:'Wat we bouwen',services_h2:'Echte automatisering. Echte resultaten.',
+    services_sub:'Elke dienst is op maat gebouwd voor uw bedrijf. Geen sjablonen — echte systemen die werken.',
+    svc_tab1:'AI Chatbot',svc_tab2:'Lead Follow-Up',svc_tab3:'Planning',svc_tab4:'Boekhouding',svc_tab5:'E-mail Automatisering',
+    svc1_h:'AI Klantenservice Chatbot',svc1_p:'Een slimme assistent die 24/7 vragen beantwoordt. Geen gemiste berichten, geen extra personeelskosten.',
+    svc1_price:'Vanaf $149 setup · $79/mo beheerd',svc1_b1:'Getraind op uw FAQ en prijzen',svc1_b2:'Werkt op website, Instagram & WhatsApp',svc1_b3:'Escaleert alleen wat het niet kan',svc1_b4:'Live in minder dan 48 uur',
+    svc_buy:'Laat dit bouwen →',
+    results_tag:'Bewezen resultaten',results_h2:'Cijfers die voor zich spreken',results_sub:'Echte data van bedrijven die we de afgelopen 12 maanden hebben geautomatiseerd.',
+    r1_label:'Per week bespaard',r1_sub:'Gemiddeld over alle klanten',
+    r2_label:'Meer leads geconverteerd',r2_sub:'Met geautomatiseerde follow-up',
+    r3_label:'Minder gemiste berichten',r3_sub:'Na chatbot implementatie',
+    r4_label:'Gemiddelde insteltijd',r4_sub:'Van audit tot live',
+    testi_tag:'Klantverhalen',testi_h2:'Wat ondernemers zeggen',testi_sub:'Echte resultaten van echte mensen.',
+    t1_text:'"Ik besteedde 3 uur per dag aan het beantwoorden van dezelfde vragen. Synaptic zette een chatbot in twee dagen op."',
+    t2_text:'"De lead follow-up automatisering betaalde zichzelf terug in de eerste week."',
+    t3_text:'"Het planningssysteem alleen al bespaart me uren per week. Klanten boeken zichzelf."',
+    pricing_tag:'Prijzen',pricing_h2:'Gebouwd voor kleine bedrijfsbudgetten',pricing_sub:'Geen contracten. Geen verborgen kosten. Altijd opzegbaar.',
+    p1_name:'Starter',p1_desc:'Eén automatisering, gebouwd en overhandigd.',p1_per:'eenmalige setupkosten',
+    p1_f1:'1 maatwerk automatisering',p1_f2:'30 min strategiegesprek',p1_f3:'7 dagen support na lancering',p1_f4:'Volledig eigendom',
+    p2_badge:'Meest populair',p2_name:'Groei',p2_desc:'Volledige bouw + doorlopend beheer.',p2_per:'na $299 setup · altijd opzegbaar',
+    p2_f1:'Tot 3 automatiseringen',p2_f2:'Maandelijkse prestatiereviews',p2_f3:'Updates & verbeteringen inbegrepen',p2_f4:'Prioriteit zelfde dag support',p2_f5:'Nieuwe tools naarmate u groeit',
+    p3_name:'Pro',p3_desc:'Maximale automatisering voor groeiende bedrijven.',p3_per:'na $499 setup · altijd opzegbaar',
+    p3_f1:'Onbeperkte automatiseringen',p3_f2:'Toegewijde accountmanager',p3_f3:'Aangepaste API-integraties',p3_f4:'Wekelijkse check-ins',p3_f5:'Teamtraining inbegrepen',
+    p_btn1:'Aan de slag →',p_btn2:'Boek uw audit →',p_btn3:'Laten we praten →',
+    faq_tag:'FAQ',faq_h2:'Vragen die we altijd krijgen',
+    cta_h2:'Klaar om alles te stoppen met handmatig doen?',cta_p:'Boek een gratis audit.',cta_btn:'Gratis aan de slag →',
+    foot_desc:'AI-automatisering voor kleine bedrijven die willen groeien.',
+    foot_services:'Diensten',foot_company:'Bedrijf',foot_contact:'Contact',foot_tagline:'Gebouwd voor bedrijven die nooit stoppen.',
+    login_h:'Welkom terug',login_sub:'Log in om uw dashboard te openen',login_btn:'Inloggen →',login_switch:'Geen account? ',
+    signup_h:'Account aanmaken',signup_sub:'Gratis aanmelden. Geen creditcard nodig.',signup_btn:'Account aanmaken →',signup_switch:'Al een account? ',
+    form_email:'E-mail',form_pass:'Wachtwoord',form_name:'Volledige naam',
+    svc2_h:'Lead Follow-Up Automatisering',svc2_p:'Elke nieuwe aanvraag krijgt binnen minuten een gepersonaliseerd antwoord.',svc2_price:'Vanaf $179 setup · $89/mo beheerd',svc2_b1:'Direct antwoord zodra iemand contact opneemt',svc2_b2:'3-staps reeks over 7 dagen',svc2_b3:'Stopt wanneer ze boeken of antwoorden',svc2_b4:'Gemiddeld 3–5x meer conversies',
+    svc3_h:'Slim Planningssysteem',svc3_p:'Vervang het eindeloze e-mailen. Klanten boeken zichzelf.',svc3_price:'Vanaf $99 setup · $49/mo beheerd',svc3_b1:'Zelfboeking via uw site of link',svc3_b2:'Automatische bevestiging + herinneringen',svc3_b3:'Synchroniseert met Google Agenda',svc3_b4:'Elimineert 90% van planningswrijving',
+    svc4_h:'Boekhoudsamenvattingen',svc4_p:'Ontvang een wekelijkse snapshot van uw cijfers in begrijpelijke taal.',svc4_price:'Vanaf $149 setup · $69/mo beheerd',svc4_b1:'Wekelijkse financiële samenvatting',svc4_b2:'Markert ongewone uitgaven automatisch',svc4_b3:'Verbindt met QuickBooks of Stripe',svc4_b4:'Maand-over-maand trendtracking',
+    svc5_h:'E-mail & Inbox Automatisering',svc5_p:'Uw inbox sorteert en antwoordt automatisch. Dringende e-mails worden gemarkeerd.',svc5_price:'Vanaf $129 setup · $59/mo beheerd',svc5_b1:'Auto-categoriseer en label e-mails',svc5_b2:'Conceptantwoorden op veelgestelde vragen',svc5_b3:'Markeer dringende berichten direct',svc5_b4:'Bespaar 1–2 uur per dag',
+  },
+  fr:{
+    nav_services:'Services',nav_pricing:'Tarifs',nav_results:'Résultats',nav_faq:'FAQ',
+    nav_login:'Connexion',nav_signup:'Commencer',
+    hero_tag:"Agence d'Automatisation IA",
+    hero_h1:"Arrêtez de faire le travail que les <em>machines</em> font mieux.",
+    hero_sub:"Nous intégrons l'IA directement dans votre entreprise — pour gérer les questions clients, les relances, les rendez-vous et l'admin.",
+    hero_cta1:'Réserver un audit gratuit →',hero_cta2:"Voir ce qu'on automatise",
+    hc1_title:'Chatbot IA',hc1_desc:'Répond aux clients 24/7',hc1_badge:'En ligne en 48h',
+    hc2_title:'Suivi des Leads',hc2_desc:'Ne perdez plus aucun prospect',hc2_badge:'3–5x plus de conversions',
+    hc3_title:'Planification Auto',hc3_desc:'Les clients se réservent eux-mêmes',hc3_badge:'Zéro allers-retours',
+    hc4_title:'Rapports Financiers',hc4_desc:'Résumé hebdomadaire clair',hc4_badge:'Connaissez vos chiffres',
+    trust_label:'Fait confiance par les PME de tous secteurs',
+    services_tag:'Ce que nous construisons',services_h2:'Automatisation réelle. Résultats réels.',
+    services_sub:"Chaque service est sur mesure pour votre entreprise. Pas des modèles — de vrais systèmes qui fonctionnent dès le premier jour.",
+    svc_tab1:'Chatbot IA',svc_tab2:'Suivi Leads',svc_tab3:'Planification',svc_tab4:'Comptabilité',svc_tab5:'Email Auto',
+    svc1_h:'Chatbot Service Client IA',svc1_p:"Un assistant intelligent formé sur votre entreprise qui répond aux questions 24h/24. Aucun message manqué.",
+    svc1_price:'À partir de 149$ · 79$/mois géré',svc1_b1:'Formé sur votre FAQ et vos tarifs',svc1_b2:'Fonctionne sur site, Instagram & WhatsApp',svc1_b3:"N'escalade que ce qu'il ne peut pas gérer",svc1_b4:'En ligne en moins de 48 heures',
+    svc_buy:'Faire construire →',
+    results_tag:'Résultats prouvés',results_h2:'Des chiffres qui parlent',results_sub:'Données réelles des entreprises automatisées ces 12 derniers mois.',
+    r1_label:'Économisé par semaine',r1_sub:'Moyenne sur tous les clients',
+    r2_label:'Plus de leads convertis',r2_sub:'Avec le suivi automatisé',
+    r3_label:'Moins de messages manqués',r3_sub:'Après déploiement chatbot',
+    r4_label:'Délai moyen de mise en place',r4_sub:"De l'audit au live",
+    testi_tag:'Témoignages',testi_h2:'Ce que disent les entrepreneurs',testi_sub:'Des résultats réels de vraies personnes.',
+    t1_text:'"Je passais 3 heures par jour à répondre aux mêmes questions. Synaptic a mis en place un chatbot en deux jours."',
+    t2_text:'"L\'automatisation du suivi des leads s\'est rentabilisée dès la première semaine."',
+    t3_text:'"Le système de planification seul me fait gagner des heures chaque semaine."',
+    pricing_tag:'Tarifs',pricing_h2:'Conçu pour les budgets PME',pricing_sub:'Sans engagement. Sans frais cachés. Résiliable à tout moment.',
+    p1_name:'Démarrage',p1_desc:'Une automatisation, construite et livrée.',p1_per:'frais uniques',
+    p1_f1:'1 automatisation personnalisée',p1_f2:'Appel stratégie 30 min',p1_f3:'Support 7 jours post-lancement',p1_f4:'Propriété totale',
+    p2_badge:'Le plus populaire',p2_name:'Croissance',p2_desc:'Construction complète + gestion mensuelle.',p2_per:'après 299$ setup · résiliable à tout moment',
+    p2_f1:"Jusqu'à 3 automatisations",p2_f2:'Bilans mensuels de performance',p2_f3:'Mises à jour incluses',p2_f4:'Support prioritaire même jour',p2_f5:'Nouveaux outils au fur et à mesure',
+    p3_name:'Pro',p3_desc:'Automatisation maximale pour entreprises en croissance.',p3_per:'après 499$ setup · résiliable',
+    p3_f1:'Automatisations illimitées',p3_f2:'Gestionnaire de compte dédié',p3_f3:'Intégrations API personnalisées',p3_f4:'Points hebdomadaires',p3_f5:'Formation incluse',
+    p_btn1:'Commencer →',p_btn2:'Réserver mon audit →',p_btn3:'Parlons-en →',
+    faq_tag:'FAQ',faq_h2:'Questions fréquentes',
+    cta_h2:'Prêt à arrêter de tout faire manuellement ?',cta_p:"Réservez un audit gratuit. Nous trouverons ce qui vous coûte le plus de temps.",cta_btn:'Commencer gratuitement →',
+    foot_desc:"Automatisation IA pour les PME qui veulent croître sans s'épuiser.",
+    foot_services:'Services',foot_company:'Entreprise',foot_contact:'Contact',foot_tagline:'Construit pour les entreprises qui ne s\'arrêtent jamais.',
+    login_h:'Bon retour',login_sub:'Connectez-vous pour accéder à votre tableau de bord',login_btn:'Connexion →',login_switch:'Pas de compte ? ',
+    signup_h:'Créer un compte',signup_sub:'Gratuit. Aucune carte bancaire requise.',signup_btn:'Créer un compte →',signup_switch:'Déjà un compte ? ',
+    form_email:'E-mail',form_pass:'Mot de passe',form_name:'Nom complet',
+    svc2_h:'Automatisation du Suivi des Leads',svc2_p:'Chaque nouvelle demande reçoit une réponse personnalisée en quelques minutes.',svc2_price:'À partir de 179$ · 89$/mois',svc2_b1:'Réponse instantanée dès la demande',svc2_b2:'Séquence en 3 étapes sur 7 jours',svc2_b3:"S'arrête quand ils réservent",svc2_b4:'3–5x plus de conversions en moyenne',
+    svc3_h:'Système de Planification Intelligent',svc3_p:'Remplacez les échanges interminables. Les clients se réservent eux-mêmes.',svc3_price:'À partir de 99$ · 49$/mois',svc3_b1:'Auto-réservation depuis votre site',svc3_b2:'Confirmation + rappels auto',svc3_b3:'Synchro Google Agenda',svc3_b4:'90% moins de friction',
+    svc4_h:'Résumés de Comptabilité',svc4_p:'Un résumé hebdomadaire de vos finances en langage clair, livré dans votre boîte mail.',svc4_price:'À partir de 149$ · 69$/mois',svc4_b1:'Résumé financier hebdomadaire',svc4_b2:'Signale les dépenses inhabituelles',svc4_b3:'Connecté à QuickBooks ou Stripe',svc4_b4:'Suivi des tendances mensuelles',
+    svc5_h:'Automatisation des Emails',svc5_p:"Votre boîte mail se trie, rédige et répond automatiquement. Les urgences sont signalées.",svc5_price:'À partir de 129$ · 59$/mois',svc5_b1:'Auto-catégorisation des emails',svc5_b2:'Brouillons de réponses',svc5_b3:'Signalement des urgences',svc5_b4:'Économisez 1–2h par jour',
+  },
+  es:{
+    nav_services:'Servicios',nav_pricing:'Precios',nav_results:'Resultados',nav_faq:'FAQ',
+    nav_login:'Iniciar sesión',nav_signup:'Comenzar',
+    hero_tag:'Agencia de Automatización IA',
+    hero_h1:'Deja de hacer trabajo que las <em>máquinas</em> hacen mejor.',
+    hero_sub:'Integramos IA directamente en tu negocio — gestionando preguntas de clientes, seguimientos, agendas y administración.',
+    hero_cta1:'Reservar una auditoría gratuita →',hero_cta2:'Ver qué automatizamos',
+    hc1_title:'Chatbot IA',hc1_desc:'Responde clientes 24/7',hc1_badge:'En vivo en 48h',
+    hc2_title:'Seguimiento Leads',hc2_desc:'Nunca pierdas un lead',hc2_badge:'3–5x más conversiones',
+    hc3_title:'Agenda Auto',hc3_desc:'Los clientes se reservan solos',hc3_badge:'Cero ida y vuelta',
+    hc4_title:'Reportes Financieros',hc4_desc:'Resumen semanal claro',hc4_badge:'Conoce tus números',
+    trust_label:'Confiado por pequeñas empresas en todas las industrias',
+    services_tag:'Qué construimos',services_h2:'Automatización real. Resultados reales.',
+    services_sub:'Cada servicio está hecho a medida para tu negocio. No plantillas — sistemas reales que funcionan.',
+    svc_tab1:'Chatbot IA',svc_tab2:'Seguimiento Leads',svc_tab3:'Agenda',svc_tab4:'Contabilidad',svc_tab5:'Email Auto',
+    svc1_h:'Chatbot de Servicio al Cliente IA',svc1_p:'Un asistente inteligente entrenado en tu negocio que responde preguntas 24/7.',
+    svc1_price:'Desde $149 setup · $79/mes gestionado',svc1_b1:'Entrenado en tu FAQ y precios',svc1_b2:'Funciona en web, Instagram & WhatsApp',svc1_b3:'Solo escala lo que no puede manejar',svc1_b4:'En vivo en menos de 48 horas',
+    svc_buy:'Construir esto →',
+    results_tag:'Resultados probados',results_h2:'Números que hablan por sí solos',results_sub:'Datos reales de empresas que hemos automatizado en los últimos 12 meses.',
+    r1_label:'Ahorrado por semana',r1_sub:'Promedio entre todos los clientes',
+    r2_label:'Más leads convertidos',r2_sub:'Con seguimiento automatizado',
+    r3_label:'Menos mensajes perdidos',r3_sub:'Tras implementar chatbot',
+    r4_label:'Tiempo promedio de configuración',r4_sub:'De auditoría a en vivo',
+    testi_tag:'Historias de clientes',testi_h2:'Lo que dicen los empresarios',testi_sub:'Resultados reales de personas reales.',
+    t1_text:'"Pasaba 3 horas al día respondiendo las mismas preguntas. Synaptic configuró un chatbot en dos días."',
+    t2_text:'"La automatización de seguimiento de leads se pagó sola en la primera semana."',
+    t3_text:'"El sistema de agenda solo me ahorra horas cada semana. Los clientes se reservan solos."',
+    pricing_tag:'Precios',pricing_h2:'Diseñado para presupuestos de pequeñas empresas',pricing_sub:'Sin contratos de permanencia. Sin cargos ocultos. Cancela cuando quieras.',
+    p1_name:'Básico',p1_desc:'Una automatización, construida y entregada.',p1_per:'tarifa única de configuración',
+    p1_f1:'1 automatización personalizada',p1_f2:'Llamada de estrategia 30 min',p1_f3:'Soporte 7 días post-lanzamiento',p1_f4:'Propiedad total',
+    p2_badge:'Más popular',p2_name:'Crecimiento',p2_desc:'Construcción completa + gestión mensual.',p2_per:'después de $299 setup · cancela cuando quieras',
+    p2_f1:'Hasta 3 automatizaciones',p2_f2:'Revisiones mensuales de rendimiento',p2_f3:'Actualizaciones incluidas',p2_f4:'Soporte prioritario el mismo día',p2_f5:'Nuevas herramientas conforme creces',
+    p3_name:'Pro',p3_desc:'Automatización máxima para negocios en crecimiento.',p3_per:'después de $499 setup · cancela cuando quieras',
+    p3_f1:'Automatizaciones ilimitadas',p3_f2:'Gerente de cuenta dedicado',p3_f3:'Integraciones API personalizadas',p3_f4:'Check-ins semanales',p3_f5:'Capacitación incluida',
+    p_btn1:'Comenzar →',p_btn2:'Reservar auditoría →',p_btn3:'Hablemos →',
+    faq_tag:'FAQ',faq_h2:'Preguntas que siempre recibimos',
+    cta_h2:'¿Listo para dejar de hacer todo manualmente?',cta_p:'Reserva una auditoría gratuita.',cta_btn:'Comenzar gratis →',
+    foot_desc:'Automatización IA para pequeñas empresas que quieren crecer.',
+    foot_services:'Servicios',foot_company:'Empresa',foot_contact:'Contacto',foot_tagline:'Construido para empresas que nunca paran.',
+    login_h:'Bienvenido de nuevo',login_sub:'Inicia sesión para acceder a tu panel',login_btn:'Iniciar sesión →',login_switch:'¿Sin cuenta? ',
+    signup_h:'Crear tu cuenta',signup_sub:'Gratis. No se necesita tarjeta.',signup_btn:'Crear cuenta →',signup_switch:'¿Ya tienes cuenta? ',
+    form_email:'Correo',form_pass:'Contraseña',form_name:'Nombre completo',
+    svc2_h:'Automatización de Seguimiento de Leads',svc2_p:'Cada nueva consulta recibe una respuesta personalizada en minutos.',svc2_price:'Desde $179 setup · $89/mes',svc2_b1:'Respuesta instantánea al momento de consultar',svc2_b2:'Secuencia de 3 pasos en 7 días',svc2_b3:'Se detiene cuando reservan',svc2_b4:'3–5x más conversiones en promedio',
+    svc3_h:'Sistema de Agenda Inteligente',svc3_p:'Reemplaza los interminables correos. Los clientes se reservan solos.',svc3_price:'Desde $99 setup · $49/mes',svc3_b1:'Auto-reserva desde tu sitio o enlace',svc3_b2:'Confirmación + recordatorios automáticos',svc3_b3:'Sincroniza con Google Calendar',svc3_b4:'Elimina el 90% de la fricción',
+    svc4_h:'Resúmenes de Contabilidad',svc4_p:'Recibe un resumen semanal de tus números en lenguaje claro.',svc4_price:'Desde $149 setup · $69/mes',svc4_b1:'Resumen financiero semanal',svc4_b2:'Señala gastos inusuales automáticamente',svc4_b3:'Conecta con QuickBooks o Stripe',svc4_b4:'Seguimiento de tendencias mensuales',
+    svc5_h:'Automatización de Email',svc5_p:'Tu bandeja de entrada se ordena y responde automáticamente.',svc5_price:'Desde $129 setup · $59/mes',svc5_b1:'Auto-categorizar y etiquetar emails',svc5_b2:'Borradores de respuestas comunes',svc5_b3:'Marcar mensajes urgentes',svc5_b4:'Ahorra 1–2 horas cada día',
+  },
+  zh:{
+    nav_services:'服务',nav_pricing:'定价',nav_results:'成果',nav_faq:'常见问题',
+    nav_login:'登录',nav_signup:'开始使用',
+    hero_tag:'AI 自动化机构',
+    hero_h1:'停止做<em>机器</em>能做得更好的工作。',
+    hero_sub:'我们将AI直接集成到您的业务中 — 处理客户问题、跟进、日程安排和行政事务，让您专注于真正推动收入增长的事情。',
+    hero_cta1:'预约免费审核 →',hero_cta2:'查看我们的自动化',
+    hc1_title:'AI 聊天机器人',hc1_desc:'全天候回答客户',hc1_badge:'48小时内上线',
+    hc2_title:'潜在客户跟进',hc2_desc:'永不错失商机',hc2_badge:'转化率提升3–5倍',
+    hc3_title:'自动预约',hc3_desc:'客户自主预订',hc3_badge:'零来回沟通',
+    hc4_title:'财务报告',hc4_desc:'每周简明摘要',hc4_badge:'掌握您的数字',
+    trust_label:'受到各行业中小企业的信赖',
+    services_tag:'我们构建什么',services_h2:'真实的自动化。真实的成果。',
+    services_sub:'每项服务都是为您的业务量身定制的。不是模板 — 是真正有效的系统。',
+    svc_tab1:'AI 聊天机器人',svc_tab2:'潜在客户跟进',svc_tab3:'预约系统',svc_tab4:'账务处理',svc_tab5:'邮件自动化',
+    svc1_h:'AI 客服聊天机器人',svc1_p:'针对您业务训练的智能助手，全天候回答问题。不再错过任何消息。',
+    svc1_price:'起价 $149 安装 · $79/月托管',svc1_b1:'基于您的FAQ和定价训练',svc1_b2:'支持网站、Instagram和WhatsApp',svc1_b3:'只升级无法处理的问题',svc1_b4:'不到48小时即可上线',
+    svc_buy:'立即构建 →',
+    results_tag:'经过验证的成果',results_h2:'数字说明一切',results_sub:'过去12个月我们自动化企业的真实数据。',
+    r1_label:'每周节省时间',r1_sub:'所有客户平均',
+    r2_label:'更多潜在客户转化',r2_sub:'通过自动跟进',
+    r3_label:'减少遗漏消息',r3_sub:'部署聊天机器人后',
+    r4_label:'平均设置时间',r4_sub:'从审核到上线',
+    testi_tag:'客户故事',testi_h2:'企业主们怎么说',testi_sub:'真实的人的真实成果。',
+    t1_text:'"我每天花3个小时回答相同的问题。Synaptic在两天内设置了聊天机器人，从此我再也不需要回答常规问题了。"',
+    t2_text:'"潜在客户跟进自动化在第一周就收回了成本。"',
+    t3_text:'"仅预约系统每周就为我节省了数小时。客户自己预订，自动提醒。"',
+    pricing_tag:'定价',pricing_h2:'为中小企业预算设计',pricing_sub:'无锁定合同。无隐藏费用。随时取消。',
+    p1_name:'入门版',p1_desc:'一项自动化，构建并交付给您。',p1_per:'一次性安装费',
+    p1_f1:'1项定制自动化',p1_f2:'30分钟策略通话',p1_f3:'上线后7天支持',p1_f4:'完全所有权',
+    p2_badge:'最受欢迎',p2_name:'成长版',p2_desc:'完整构建 + 每月持续管理。',p2_per:'$299安装后 · 随时取消',
+    p2_f1:'最多3项自动化',p2_f2:'每月绩效回顾',p2_f3:'包含更新和改进',p2_f4:'优先当天支持',p2_f5:'随增长添加新工具',
+    p3_name:'专业版',p3_desc:'成长型企业的最大自动化。',p3_per:'$499安装后 · 随时取消',
+    p3_f1:'无限自动化',p3_f2:'专属客户经理',p3_f3:'自定义API集成',p3_f4:'每周检查',p3_f5:'包含团队培训',
+    p_btn1:'开始使用 →',p_btn2:'预约审核 →',p_btn3:'联系我们 →',
+    faq_tag:'常见问题',faq_h2:'我们经常收到的问题',
+    cta_h2:'准备好停止手动处理一切了吗？',cta_p:'预约免费审核。我们将找出最耗时的环节并告诉您如何自动化它。',cta_btn:'免费开始 →',
+    foot_desc:'为想要增长而不精疲力竭的中小企业提供AI自动化。',
+    foot_services:'服务',foot_company:'公司',foot_contact:'联系我们',foot_tagline:'为永不停歇的企业而建。',
+    login_h:'欢迎回来',login_sub:'登录访问您的控制面板',login_btn:'登录 →',login_switch:'没有账户？',
+    signup_h:'创建账户',signup_sub:'免费注册。无需信用卡。',signup_btn:'创建账户 →',signup_switch:'已有账户？',
+    form_email:'电子邮件',form_pass:'密码',form_name:'全名',
+    svc2_h:'潜在客户跟进自动化',svc2_p:'每个新询盘在几分钟内获得个性化回复，然后是智能跟进序列。',svc2_price:'起价 $179 安装 · $89/月',svc2_b1:'询盘后立即回复',svc2_b2:'7天3步序列',svc2_b3:'预订或回复后自动停止',svc2_b4:'平均转化率提升3–5倍',
+    svc3_h:'智能预约系统',svc3_p:'告别无休止的邮件往来。客户自主预订，自动提醒。',svc3_price:'起价 $99 安装 · $49/月',svc3_b1:'从网站或链接自助预订',svc3_b2:'自动确认和提醒',svc3_b3:'与Google日历同步',svc3_b4:'消除90%的预约摩擦',
+    svc4_h:'账务摘要报告',svc4_p:'每周收到通俗易懂的财务快照，无需会计知识。',svc4_price:'起价 $149 安装 · $69/月',svc4_b1:'每周简明财务摘要',svc4_b2:'自动标记异常支出',svc4_b3:'连接QuickBooks或Stripe',svc4_b4:'月度趋势跟踪',
+    svc5_h:'邮件自动化',svc5_p:'收件箱自动分类、起草和回复。紧急邮件被标记，每天为您节省1-2小时。',svc5_price:'起价 $129 安装 · $59/月',svc5_b1:'自动分类和标记邮件',svc5_b2:'为常见询问起草回复',svc5_b3:'立即标记紧急消息',svc5_b4:'每天节省1–2小时',
+  },
+  de:{
+    nav_services:'Leistungen',nav_pricing:'Preise',nav_results:'Ergebnisse',nav_faq:'FAQ',
+    nav_login:'Anmelden',nav_signup:'Loslegen',
+    hero_tag:'KI-Automatisierungsagentur',
+    hero_h1:'Hör auf, Arbeit zu machen, die <em>Maschinen</em> besser können.',
+    hero_sub:'Wir integrieren KI direkt in dein Unternehmen — für Kundenanfragen, Follow-ups, Terminplanung und Administration.',
+    hero_cta1:'Kostenloses Audit buchen →',hero_cta2:'Sieh, was wir automatisieren',
+    hc1_title:'KI-Chatbot',hc1_desc:'Beantwortet Kunden 24/7',hc1_badge:'In 48Std live',
+    hc2_title:'Lead Follow-Up',hc2_desc:'Kein Lead mehr verlieren',hc2_badge:'3–5x mehr Konversionen',
+    hc3_title:'Auto-Terminplanung',hc3_desc:'Kunden buchen sich selbst',hc3_badge:'Kein Hin-und-her mehr',
+    hc4_title:'Finanzberichte',hc4_desc:'Wöchentlicher klarer Überblick',hc4_badge:'Deine Zahlen kennen',
+    trust_label:'Vertraut von kleinen Unternehmen aller Branchen',
+    services_tag:'Was wir bauen',services_h2:'Echte Automatisierung. Echte Ergebnisse.',
+    services_sub:'Jeder Service ist maßgeschneidert für dein Unternehmen. Keine Vorlagen — echte Systeme.',
+    svc_tab1:'KI-Chatbot',svc_tab2:'Lead Follow-Up',svc_tab3:'Terminplanung',svc_tab4:'Buchhaltung',svc_tab5:'E-Mail-Auto',
+    svc1_h:'KI-Kundenservice-Chatbot',svc1_p:'Ein intelligenter Assistent, der 24/7 Fragen beantwortet. Keine verpassten Nachrichten mehr.',
+    svc1_price:'Ab 149$ Setup · 79$/Monat verwaltet',svc1_b1:'Trainiert auf dein FAQ und Preise',svc1_b2:'Funktioniert auf Website, Instagram & WhatsApp',svc1_b3:'Leitet nur weiter, was er nicht lösen kann',svc1_b4:'In weniger als 48 Stunden live',
+    svc_buy:'Jetzt bauen lassen →',
+    results_tag:'Bewährte Ergebnisse',results_h2:'Zahlen, die für sich sprechen',results_sub:'Echte Daten von Unternehmen, die wir in den letzten 12 Monaten automatisiert haben.',
+    r1_label:'Pro Woche gespart',r1_sub:'Durchschnitt aller Kunden',
+    r2_label:'Mehr Leads konvertiert',r2_sub:'Mit automatisierten Follow-ups',
+    r3_label:'Weniger verpasste Nachrichten',r3_sub:'Nach Chatbot-Deployment',
+    r4_label:'Durchschnittliche Einrichtungszeit',r4_sub:'Von Audit bis live',
+    testi_tag:'Kundenstimmen',testi_h2:'Was Unternehmer sagen',testi_sub:'Echte Ergebnisse von echten Menschen.',
+    t1_text:'"Ich verbrachte täglich 3 Stunden damit, dieselben Fragen zu beantworten. Synaptic richtete in zwei Tagen einen Chatbot ein."',
+    t2_text:'"Die Lead-Follow-up-Automatisierung hat sich in der ersten Woche bezahlt gemacht."',
+    t3_text:'"Das Planungssystem allein spart mir wöchentlich Stunden. Kunden buchen sich selbst."',
+    pricing_tag:'Preise',pricing_h2:'Für kleine Unternehmensbudgets entwickelt',pricing_sub:'Keine Bindungsverträge. Keine versteckten Kosten. Jederzeit kündbar.',
+    p1_name:'Starter',p1_desc:'Eine Automatisierung, gebaut und übergeben.',p1_per:'einmalige Einrichtungsgebühr',
+    p1_f1:'1 maßgeschneiderte Automatisierung',p1_f2:'30-Min-Strategiegespräch',p1_f3:'7 Tage Support nach Launch',p1_f4:'Vollständiges Eigentum',
+    p2_badge:'Beliebteste Wahl',p2_name:'Wachstum',p2_desc:'Vollständiger Aufbau + monatliche Verwaltung.',p2_per:'nach 299$ Setup · jederzeit kündbar',
+    p2_f1:'Bis zu 3 Automatisierungen',p2_f2:'Monatliche Performance-Reviews',p2_f3:'Updates & Verbesserungen inklusive',p2_f4:'Prioritäts-Support am selben Tag',p2_f5:'Neue Tools beim Wachsen',
+    p3_name:'Pro',p3_desc:'Maximale Automatisierung für wachsende Unternehmen.',p3_per:'nach 499$ Setup · jederzeit kündbar',
+    p3_f1:'Unbegrenzte Automatisierungen',p3_f2:'Dedizierter Account-Manager',p3_f3:'Custom API-Integrationen',p3_f4:'Wöchentliche Check-ins',p3_f5:'Team-Schulung inklusive',
+    p_btn1:'Loslegen →',p_btn2:'Audit buchen →',p_btn3:'Lass uns reden →',
+    faq_tag:'FAQ',faq_h2:'Fragen, die wir immer bekommen',
+    cta_h2:'Bereit, aufzuhören, alles manuell zu machen?',cta_p:'Buche ein kostenloses Audit.',cta_btn:'Kostenlos starten →',
+    foot_desc:'KI-Automatisierung für kleine Unternehmen, die ohne Burnout wachsen möchten.',
+    foot_services:'Leistungen',foot_company:'Unternehmen',foot_contact:'Kontakt',foot_tagline:'Gebaut für Unternehmen, die nie aufhören.',
+    login_h:'Willkommen zurück',login_sub:'Melde dich an, um auf dein Dashboard zuzugreifen',login_btn:'Anmelden →',login_switch:'Kein Konto? ',
+    signup_h:'Konto erstellen',signup_sub:'Kostenlos registrieren. Keine Kreditkarte nötig.',signup_btn:'Konto erstellen →',signup_switch:'Bereits ein Konto? ',
+    form_email:'E-Mail',form_pass:'Passwort',form_name:'Vollständiger Name',
+    svc2_h:'Lead Follow-Up Automatisierung',svc2_p:'Jede neue Anfrage erhält innerhalb von Minuten eine personalisierte Antwort.',svc2_price:'Ab 179$ Setup · 89$/Monat',svc2_b1:'Sofortige Antwort bei Anfrage',svc2_b2:'3-Schritte-Sequenz über 7 Tage',svc2_b3:'Stoppt wenn sie buchen',svc2_b4:'Durchschnittlich 3–5x mehr Konversionen',
+    svc3_h:'Intelligentes Terminplanungssystem',svc3_p:'Ersetze das endlose E-Mail-Hin-und-her. Kunden buchen sich selbst.',svc3_price:'Ab 99$ Setup · 49$/Monat',svc3_b1:'Selbstbuchung von deiner Website',svc3_b2:'Auto-Bestätigung + Erinnerungen',svc3_b3:'Synchronisiert mit Google Kalender',svc3_b4:'Eliminiert 90% der Planungsreibung',
+    svc4_h:'Buchhaltungs-Zusammenfassungen',svc4_p:'Erhalte wöchentlich einen verständlichen Überblick über deine Finanzen.',svc4_price:'Ab 149$ Setup · 69$/Monat',svc4_b1:'Wöchentliche Finanzübersicht',svc4_b2:'Markiert ungewöhnliche Ausgaben',svc4_b3:'Verbindet mit QuickBooks oder Stripe',svc4_b4:'Monatliche Trendverfolgung',
+    svc5_h:'E-Mail & Posteingang Automatisierung',svc5_p:'Dein Posteingang sortiert, entwirft und antwortet automatisch.',svc5_price:'Ab 129$ Setup · 59$/Monat',svc5_b1:'Auto-Kategorisierung von E-Mails',svc5_b2:'Antwort-Entwürfe für häufige Anfragen',svc5_b3:'Dringende Nachrichten sofort markieren',svc5_b4:'Spare 1–2 Stunden pro Tag',
+  }
+};
+
+let lang='en';
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(T[l]&&T[l][k]) el.innerHTML=T[l][k];
+  });
+}
+
+// =============================================
+// FAQ DATA
+// =============================================
+const faqs=[
+  {q:'Do I need any tech skills to use your services?',a:'None at all. We handle everything from setup to launch. You review and approve — that\'s it. If you can use email, you\'re qualified.'},
+  {q:'How long does setup actually take?',a:'Most automations go live within 48–72 hours of our kickoff call. Complex builds can take up to a week, but we\'ll always give you a clear timeline upfront.'},
+  {q:'What if I want to cancel?',a:'No problem. Cancel any time with no penalties. We\'ll send you everything we\'ve built so you keep full ownership of your automation.'},
+  {q:'Will my customers know they\'re talking to a bot?',a:'Your chatbot can be branded as your team and feel very natural. But yes — you can also be fully transparent. Either way, most customers prefer fast answers over knowing who\'s answering.'},
+  {q:'What businesses do you work with?',a:'Any small to mid-sized business with repetitive tasks. Gyms, salons, real estate agents, coaches, restaurants, e-commerce stores, law firms — we\'ve worked with all of them.'},
+  {q:'Is there a free trial?',a:'We offer a free 30-minute audit call where we show you exactly what automations would save your business the most time. No payment required, no obligation.'},
+];
+function buildFAQ(){
+  const list=document.getElementById('faq-list');
+  faqs.forEach((f,i)=>{
+    const item=document.createElement('div');item.className='faq-item';
+    item.innerHTML=`<div class="faq-q" onclick="toggleFAQ(${i})"><span>${f.q}</span><span class="faq-icon">+</span></div><div class="faq-a"><p>${f.a}</p></div>`;
+    list.appendChild(item);
+  });
+}
+function toggleFAQ(i){
+  const items=document.querySelectorAll('.faq-item');
+  const q=items[i].querySelector('.faq-q');
+  const a=items[i].querySelector('.faq-a');
+  const open=q.classList.contains('open');
+  document.querySelectorAll('.faq-q').forEach(q=>q.classList.remove('open'));
+  document.querySelectorAll('.faq-a').forEach(a=>a.classList.remove('open'));
+  if(!open){q.classList.add('open');a.classList.add('open');}
+}
+
+// =============================================
+// AUTH
+// =============================================
+function openModal(type){
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-login').style.display=type==='login'?'block':'none';
+  document.getElementById('modal-signup').style.display=type==='signup'?'block':'none';
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('signup-error').classList.remove('show');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open')}
+function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal()}
+
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  if(email===OWNER_EMAIL&&pass===OWNER_PASS){
+    currentUser={email,name:'Owner',role:'owner'};
+    localStorage.setItem('syn_user',JSON.stringify(currentUser));
+    closeModal();updateNav();goToDash();return;
+  }
+  const user=users.find(u=>u.email===email&&u.pass===pass);
+  if(user){
+    currentUser={...user};
+    localStorage.setItem('syn_user',JSON.stringify(currentUser));
+    closeModal();updateNav();goToDash();
+  } else {
+    document.getElementById('login-error').classList.add('show');
+  }
+}
+
+function doSignup(){
+  const name=document.getElementById('signup-name').value.trim();
+  const email=document.getElementById('signup-email').value.trim();
+  const pass=document.getElementById('signup-pass').value;
+  if(!name||!email||!pass){document.getElementById('signup-error').classList.add('show');return;}
+  if(users.find(u=>u.email===email)){document.getElementById('signup-error').textContent='Email already registered.';document.getElementById('signup-error').classList.add('show');return;}
+  const user={name,email,pass,role:'client',joinDate:new Date().toLocaleDateString()};
+  users.push(user);
+  localStorage.setItem('syn_users',JSON.stringify(users));
+  currentUser={...user};
+  localStorage.setItem('syn_user',JSON.stringify(currentUser));
+  closeModal();updateNav();goToDash();
+}
+
+function logout(){
+  currentUser=null;
+  localStorage.removeItem('syn_user');
+  updateNav();showPage('home');
+}
+
+function updateNav(){
+  const isLoggedIn=!!currentUser;
+  document.getElementById('nav-login-btn').classList.toggle('hidden',isLoggedIn);
+  document.getElementById('nav-signup-btn').classList.toggle('hidden',isLoggedIn);
+  document.getElementById('nav-dash-btn').classList.toggle('hidden',!isLoggedIn);
+  document.getElementById('nav-logout-btn').classList.toggle('hidden',!isLoggedIn);
+}
+
+function goToDash(){
+  if(!currentUser){openModal('login');return;}
+  if(currentUser.role==='owner'){
+    showPage('dashboard');
+    renderOwnerDash();
+  } else {
+    showPage('client');
+    renderClientDash();
+  }
+}
+
+// =============================================
+// PAGE ROUTING
+// =============================================
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// =============================================
+// SERVICES
+// =============================================
+function showSvc(id,btn){
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.service-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('svc-'+id).classList.add('active');
+}
+function showSvcTab(id){
+  showPage('home');
+  setTimeout(()=>{
+    document.getElementById('services').scrollIntoView({behavior:'smooth'});
+    const btn=[...document.querySelectorAll('.stab')].find(b=>b.onclick&&b.onclick.toString().includes(id));
+    if(btn) btn.click();
+  },100);
+}
+
+// =============================================
+// PAYMENT
+// =============================================
+function buyPlan(planId){
+  if(!currentUser){openModal('signup');return;}
+  currentPlan=planId;
+  const plan=PLANS[planId]||PLANS.growth;
+  document.getElementById('pay-plan-name').textContent=plan.name;
+  document.getElementById('pay-plan-price').textContent=plan.price;
+  document.getElementById('pay-body').style.display='block';
+  document.getElementById('pay-success').style.display='none';
+  document.getElementById('pay-overlay').classList.add('open');
+}
+function closePay(){document.getElementById('pay-overlay').classList.remove('open')}
+function closePayOutside(e){if(e.target===document.getElementById('pay-overlay'))closePay()}
+function selectPayMethod(m){
+  document.querySelectorAll('.pay-method').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('pm-'+m).classList.add('selected');
+  document.getElementById('card-fields').classList.toggle('show',m==='card');
+}
+function formatCard(input){
+  let v=input.value.replace(/\D/g,'').substring(0,16);
+  input.value=v.replace(/(.{4})/g,'$1 ').trim();
+}
+function processPayment(){
+  const btn=document.getElementById('pay-btn');
+  btn.innerHTML='<span class="loading-spinner"></span>Processing...';
+  btn.disabled=true;
+  setTimeout(()=>{
+    const plan=PLANS[currentPlan]||PLANS.growth;
+    const order={
+      id:'ORD-'+Math.random().toString(36).substring(2,8).toUpperCase(),
+      client:currentUser.name,
+      email:currentUser.email,
+      plan:plan.name,
+      amount:plan.amount,
+      date:new Date().toLocaleDateString(),
+      status:'paid'
+    };
+    orders.push(order);
+    localStorage.setItem('syn_orders',JSON.stringify(orders));
+    document.getElementById('pay-body').style.display='none';
+    document.getElementById('pay-success').style.display='block';
+    btn.innerHTML='Complete Purchase →';
+    btn.disabled=false;
+    renderOwnerMetrics();
+  },2000);
+}
+
+// =============================================
+// OWNER DASHBOARD
+// =============================================
+const DEMO_ORDERS=[
+  {id:'ORD-A1B2C3',client:'Marcus Johnson',email:'marcus@fitlifegym.com',plan:'Growth Plan',amount:149,date:'Jun 1, 2026',status:'paid'},
+  {id:'ORD-D4E5F6',client:'Sofia Chen',email:'sofia@keyrealty.com',plan:'AI Chatbot',amount:149,date:'Jun 2, 2026',status:'paid'},
+  {id:'ORD-G7H8I9',client:'Aisha Kofi',email:'aisha@bloomsalon.com',plan:'Pro Plan',amount:299,date:'Jun 3, 2026',status:'paid'},
+  {id:'ORD-J0K1L2',client:'David Park',email:'david@novacafe.com',plan:'Scheduling Setup',amount:99,date:'Jun 4, 2026',status:'paid'},
+  {id:'ORD-M3N4O5',client:'Priya Sharma',email:'priya@lexai.co',plan:'Lead Follow-Up',amount:179,date:'Jun 5, 2026',status:'pending'},
+  {id:'ORD-P6Q7R8',client:'James Wright',email:'james@buildright.co',plan:'Starter',amount:149,date:'Jun 6, 2026',status:'new'},
+];
+
+function renderOwnerDash(){
+  document.getElementById('dash-greeting').textContent='';
+  renderOwnerMetrics();
+  renderRevenueChart();
+  renderActivityFeed();
+  renderOrdersTable();
+  renderClientsGrid();
+  renderTrafficCharts();
+  renderRevenueBreakdown();
+}
+
+function renderOwnerMetrics(){
+  const allOrders=[...DEMO_ORDERS,...orders];
+  const totalRev=allOrders.filter(o=>o.status==='paid').reduce((s,o)=>s+o.amount,0);
+  const mrr=allOrders.filter(o=>o.status==='paid'&&(o.plan.includes('Growth')||o.plan.includes('Pro'))).reduce((s,o)=>s+o.amount,0);
+  document.getElementById('m-revenue').textContent='$'+totalRev.toLocaleString();
+  document.getElementById('m-orders').textContent=allOrders.length;
+  document.getElementById('m-visitors').textContent=(visitors+847).toLocaleString();
+  document.getElementById('m-clients').textContent=new Set(allOrders.map(o=>o.email)).size;
+  document.getElementById('m-mrr').textContent='$'+mrr.toLocaleString();
+  document.getElementById('m-conv').textContent=Math.round((allOrders.filter(o=>o.status==='paid').length/allOrders.length)*100)+'%';
+  document.getElementById('m-rev-change').textContent='+$'+Math.round(totalRev*0.18).toLocaleString()+' this month';
+  document.getElementById('m-ord-change').textContent='+'+allOrders.length+' total';
+  document.getElementById('total-revenue-big').textContent='$'+totalRev.toLocaleString();
+  document.getElementById('client-count').textContent=new Set(allOrders.map(o=>o.email)).size;
+}
+
+function renderRevenueChart(){
+  const vals=[189,247,198,312,276,149,224];
+  renderBarChart('rev-chart',vals,'$');
+}
+
+function renderBarChart(id,vals,prefix){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.innerHTML='';
+  const max=Math.max(...vals);
+  vals.forEach(v=>{
+    const bar=document.createElement('div');
+    bar.className='ch-bar';
+    bar.style.height='0%';
+    bar.style.background='rgba(200,241,53,0.3)';
+    const tip=document.createElement('div');
+    tip.className='tip';
+    tip.textContent=(prefix||'')+v.toLocaleString();
+    bar.appendChild(tip);
+    el.appendChild(bar);
+    setTimeout(()=>{bar.style.height=Math.round((v/max)*100)+'%'},100);
+  });
+}
+
+function renderActivityFeed(){
+  const feed=document.getElementById('activity-feed');
+  if(!feed) return;
+  const activities=[
+    {dot:'#C8F135',text:'New order: James Wright — Starter Plan',time:'2 min ago'},
+    {dot:'#2ecc71',text:'Payment confirmed: Priya Sharma $179',time:'14 min ago'},
+    {dot:'#5b7fff',text:'New signup: james@buildright.co',time:'22 min ago'},
+    {dot:'#C8F135',text:'New order: Aisha Kofi — Pro Plan $299',time:'1hr ago'},
+    {dot:'#ff9f1c',text:'Visitor milestone: 1,000 this week',time:'3hr ago'},
+  ];
+  const allOrds=[...orders].reverse().slice(0,2);
+  allOrds.forEach(o=>activities.unshift({dot:'#C8F135',text:`New order: ${o.client} — ${o.plan}`,time:'just now'}));
+  feed.innerHTML=activities.slice(0,6).map(a=>`
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${a.dot}"></div>
+      <div><div>${a.text}</div><div class="activity-time">${a.time}</div></div>
+    </div>`).join('');
+}
+
+function renderOrdersTable(){
+  const tbody=document.getElementById('orders-tbody');
+  if(!tbody) return;
+  const allOrders=[...DEMO_ORDERS,...orders];
+  tbody.innerHTML=allOrders.map(o=>`
+    <tr>
+      <td style="color:var(--lime);font-size:0.78rem">${o.id}</td>
+      <td>${o.client}</td>
+      <td>${o.plan}</td>
+      <td style="font-family:var(--font-head);font-weight:700">$${o.amount}</td>
+      <td style="color:var(--muted)">${o.date}</td>
+      <td><span class="status-badge ${o.status}">${o.status}</span></td>
+    </tr>`).join('');
+}
+
+function renderClientsGrid(){
+  const grid=document.getElementById('clients-grid');
+  if(!grid) return;
+  const allOrders=[...DEMO_ORDERS,...orders];
+  const seen=new Set();
+  const clients=allOrders.filter(o=>{if(seen.has(o.email)){return false;}seen.add(o.email);return true;});
+  const colors=['rgba(200,241,53,0.15)','rgba(91,76,245,0.15)','rgba(46,204,113,0.15)','rgba(255,159,28,0.15)'];
+  const tcolors=['var(--lime)','#8b7fff','var(--success)','#ff9f1c'];
+  grid.innerHTML=clients.map((c,i)=>`
+    <div class="client-card">
+      <div class="client-avatar" style="background:${colors[i%4]};color:${tcolors[i%4]}">${c.client.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>
+      <div class="client-info"><h5>${c.client}</h5><p>${c.email}</p><p style="color:var(--lime);font-size:0.75rem;margin-top:2px">${c.plan}</p></div>
+      <span class="client-badge status-badge paid">Active</span>
+    </div>`).join('');
+}
+
+function renderTrafficCharts(){
+  renderBarChart('traffic-chart',[124,98,167,203,178,89,142]);
+  const sources=document.getElementById('traffic-sources');
+  if(sources){
+    const data=[['Organic Search',42],['Direct',28],['Social Media',18],['Referral',8],['Email',4]];
+    sources.innerHTML=data.map(([s,p])=>`
+      <div class="visitor-row">
+        <span style="min-width:110px;font-size:0.8rem">${s}</span>
+        <div class="visitor-bar-wrap"><div class="visitor-bar" style="width:${p}%"></div></div>
+        <span class="visitor-count">${p}%</span>
+      </div>`).join('');
+  }
+  const pages=document.getElementById('top-pages');
+  if(pages){
+    const data=[['/ (Home)',312],['/#pricing',187],['/#services',143],['/#results',89],['/#faq',54]];
+    pages.innerHTML=data.map(([p,v])=>`
+      <div class="visitor-row">
+        <span style="min-width:110px;font-size:0.78rem;color:var(--lime)">${p}</span>
+        <div class="visitor-bar-wrap"><div class="visitor-bar" style="width:${Math.round(v/312*100)}%"></div></div>
+        <span class="visitor-count">${v}</span>
+      </div>`).join('');
+  }
+  const devices=document.getElementById('device-breakdown');
+  if(devices){
+    devices.innerHTML=`
+      <svg width="100" height="100" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"/>
+        <circle cx="18" cy="18" r="16" fill="none" stroke="#C8F135" stroke-width="3.5" stroke-dasharray="60 40" stroke-dashoffset="25" transform="rotate(-90 18 18)"/>
+        <circle cx="18" cy="18" r="16" fill="none" stroke="#5b4cf5" stroke-width="3.5" stroke-dasharray="28 72" stroke-dashoffset="-35" transform="rotate(-90 18 18)"/>
+        <circle cx="18" cy="18" r="16" fill="none" stroke="#2ecc71" stroke-width="3.5" stroke-dasharray="12 88" stroke-dashoffset="-63" transform="rotate(-90 18 18)"/>
+      </svg>
+      <div class="pie-legend">
+        <div class="pie-item"><div class="pie-dot" style="background:#C8F135"></div>Mobile — 60%</div>
+        <div class="pie-item"><div class="pie-dot" style="background:#5b4cf5"></div>Desktop — 28%</div>
+        <div class="pie-item"><div class="pie-dot" style="background:#2ecc71"></div>Tablet — 12%</div>
+      </div>`;
+  }
+}
+
+function renderRevenueBreakdown(){
+  renderBarChart('monthly-chart',[899,1247,1098,1612,1876,2049]);
+  const svc=document.getElementById('revenue-by-service');
+  if(svc){
+    const data=[['Growth Plans',45],['AI Chatbot',22],['Pro Plans',18],['Scheduling',9],['Other',6]];
+    svc.innerHTML=data.map(([s,p])=>`
+      <div class="visitor-row">
+        <span style="min-width:120px;font-size:0.8rem">${s}</span>
+        <div class="visitor-bar-wrap"><div class="visitor-bar" style="width:${p}%"></div></div>
+        <span class="visitor-count">${p}%</span>
+      </div>`).join('');
+  }
+}
+
+function refreshDash(){renderOwnerDash()}
+function showDashPanel(id,btn){
+  document.querySelectorAll('.dtab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('dp-'+id).classList.add('active');
+}
+
+// =============================================
+// CLIENT DASHBOARD
+// =============================================
+function renderClientDash(){
+  const name=currentUser.name.split(' ')[0];
+  document.getElementById('client-greeting').textContent=`— ${name}`;
+  const myOrders=orders.filter(o=>o.email===currentUser.email);
+  document.getElementById('cl-services').textContent=myOrders.length;
+  document.getElementById('cl-spent').textContent='$'+myOrders.reduce((s,o)=>s+o.amount,0);
+  const list=document.getElementById('client-orders-list');
+  if(myOrders.length===0){
+    list.innerHTML=`<div style="color:var(--muted);font-size:0.9rem;padding:2rem 0">No active services yet. <a href="#" onclick="showPage('home');window.scrollTo(0,0)" style="color:var(--lime)">Browse our plans →</a></div>`;
+  } else {
+    const icons={chatbot:'🤖',leads:'📬',booking:'📅',books:'📊',email:'📧',starter:'⚡',growth:'🚀',pro:'💎'};
+    list.innerHTML=myOrders.map(o=>`
+      <div class="order-card">
+        <div class="order-icon">${icons[Object.keys(PLANS).find(k=>PLANS[k].name===o.plan)]||'✅'}</div>
+        <div class="order-info">
+          <h4>${o.plan}</h4>
+          <p>Order ${o.id} · ${o.date}</p>
+          <span class="status-badge paid">Active</span>
+        </div>
+        <div class="order-price">$${o.amount}</div>
+      </div>`).join('');
+  }
+}
+
+// =============================================
+// INIT
+// =============================================
+buildFAQ();
+updateNav();
+if(currentUser) updateNav();
+
+// Restore session
+if(currentUser){
+  updateNav();
+}
+</script>
+</body>
+</html>
